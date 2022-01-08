@@ -1,4 +1,7 @@
-./x64
-./SDL2-2.0.10
-./.vs
-./Debug
+x64
+SDL2-2.0.10
+.vs
+Debug
+Release
+/comp
+/libSDL2.a
