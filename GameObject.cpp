@@ -17,12 +17,12 @@ SDL_Surface* GameObject::getImage() {
 	return this->image;
 }
 
-void GameObject::draw(SDL_Surface* surface) {
+void GameObject::draw(SDL_Surface* surface, int offsetX, int offsetY) {
 	
 	if (this->image != nullptr) {
-		Graphics::Surface(surface, this->image, *this->x, *this->y);
+		Graphics::Surface(surface, this->image, *this->x - offsetX, *this->y - offsetY);
 	}
 	else {
-		this->shape->draw(surface);
+		this->shape->draw(surface,offsetX,offsetY);
 	}
 }

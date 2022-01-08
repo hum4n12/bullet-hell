@@ -68,15 +68,15 @@ GameObject* List::remove(int pos){
 
 
 GameObject* List::get(int pos) {
-    Node* curr = nullptr;
+    Node* curr = this->head;
     GameObject* value = nullptr;
 
     int i = 0;
-    while (curr != this->tail) {
+    while (curr != this->tail && i < pos) {
         curr = curr->next;
         i++;
     }
-    value = curr->value;
+    if(curr != nullptr ) value = curr->value;
 
     return value;
 }

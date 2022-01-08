@@ -7,12 +7,14 @@
 class Player :public GameObject{
 private:
 	Camera* camera;
-	Rectangle* shape;
+	int const CONST_SPEED = 700;
 public:
 	Player(Camera* camera,ColliderShape* shape, SDL_Surface* image = nullptr);
-	bool collision(GameObject* go);
+	void collision(GameObject* go,SDL_Surface* screen);
 	void controls(SDL_Event event);
 	void addCoords(int x, int y);
-	void update(double delta, int offsetX,int offsetY) override;
+	void setX(int x);
+	void setY(int y);
+	void update(int offsetX,int offsetY, double delta = 0) override;
 };
 

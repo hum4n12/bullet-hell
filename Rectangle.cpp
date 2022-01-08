@@ -1,40 +1,54 @@
 #include "Rectangle.h"
-
+#include <stdio.h>
 Rectangle::Rectangle(int x,int y, int width, int height, Uint32 color) {
-	this->x = x;
-	this->y = y;
+	this->x = x + width / 2;
+	this->y = y + height / 2;
 	this->width = width;
 	this->height = height;
 	this->color = color;
 }
 
 //collider.x < x2 + w2 and x2 < collider.x + collider.width and
-bool Rectangle::collision(int* cx, int* cy) {
-	int x = *cx;
-	int y = *cy;
-	if (cx == nullptr && cy == nullptr) return false;
-	//checking if collider x is between left and right side of rectangle
-	if (cy == nullptr) {
-		return (x < this->x + this->width && x > this->x);
-	}
-	if (cx == nullptr) {
-		return (y < this->y + this->height && y > this->y);
-	}
-	else{
-		return (x < this->x + this->width && x > this->x && y < this->y + this->height && y > this->y);
-	}
+
+bool Rectangle::collision(int x, int y) {
+	int hw = this->width / 2;
+	int hh = this->height / 2;
+	
+	if (x > this->x - hw && x < this->x + hw && y > this->y - hh && y < this->y + hh) return true;
 	return false;
 }
 
-void Rectangle::draw(SDL_Surface* screen) {
+Vector2 Rectangle::nearestPoint(int x, int y) {
+	if (this->lastNearestPoint != nullptr) {
+		printf("a");
+		return *this->lastNearestPoint;
+	}
+	Vector2 pos;
+	int hw = this->width / 2;
+	int hh = this->height / 2;
+	pos.x = x - this->x;
+	pos.y = y - this->y;
+
+	if (pos.x > hw) pos.x = hw;
+	else if (pos.x < -hw) pos.x = -hw;
+
+	if (pos.y > hh) pos.y = hh;
+	else if (pos.y < -hh) pos.y = -hh;
+
+	pos.x += this->x;
+	pos.y += this->y;
+
+	return pos;
+}
+
+void Rectangle::setColliderPoint(int x, int y) {
+	if(x >= 0)
+		this->x = x;
+	if (y >= 0)
+		this->y = y;
+}
+
+void Rectangle::draw(SDL_Surface* screen, int offsetX, int offsetY) {
 	this->color = SDL_MapRGB(screen->format, 0x11, 0x11, 0xCC);
-	Graphics::Rectangle(screen,this->x,this->y,this->width,this->height,this->color,this->color);
-}
-
-int Rectangle::getWidth() {
-	return this->width;
-}
-
-int Rectangle::getHeight() {
-	return this->height;
+	Graphics::Rectangle(screen,this->x-offsetX,this->y-offsetY,this->width,this->height,this->color,this->color);
 }

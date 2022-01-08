@@ -9,14 +9,15 @@ GameController::GameController() {
 	this->delta = 0;
 	this->worldTime = 0;
 	this->screen = nullptr;
-	int playerX = SCREEN_WIDTH / 2 - 25;
-	int playerY = SCREEN_HEIGHT / 2 - 25;
+	int playerX = SCREEN_WIDTH / 2;
+	int playerY = SCREEN_HEIGHT / 2;
 	
 	this->camera.x = 0;
 	this->camera.y = 0;
 	this->camera.originX = playerX;
 	this->camera.originY = playerY;
-	this->player = new Player(&this->camera,new Rectangle(playerX, playerY, 50, 50, 0));
+
+	this->player = new Player(&this->camera, new Rectangle(playerX, playerY, 50, 50, 0));
 	//this->screen = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 };
 
@@ -57,13 +58,13 @@ void GameController::update() {
 	int niebieski = SDL_MapRGB(screen->format, 0x11, 0x11, 0xCC);
 	int zielony = SDL_MapRGB(screen->format, 0x00, 0xFF, 0x00);
 
-	Level level0(50,50,"./levels/0/","./levels/0/tileset.bmp",this->screen);
+	Level level0(50,50,"./levels/0/","./levels/0/tileset.bmp",this->screen,this->player);
+	level0.init();
 	this->camera.levelWidth = 50 * TILE_SIZE;
 	this->camera.levelHeight = 50 * TILE_SIZE;
-
+	int czerwony = SDL_MapRGB(screen->format, 0xFF, 0x00, 0x00);
 	while (!this->quit) {
 		this->eventHandler();
-
 
 		t2 = SDL_GetTicks();
 		this->delta = (t2 - t1) * 0.001;
@@ -71,25 +72,15 @@ void GameController::update() {
 		t1 = t2;
 
 		SDL_FillRect(this->screen, NULL, niebieski);
-		this->player->update(this->delta,0,0);
-
-
-		/*DRAWING*/
-		for (int i = 0; i < this->gameObjects.getSize(); i++) {
-			actual = this->gameObjects.get(i);
-			actual->draw(this->screen);
-		}
-
-		level0.draw(this->camera);
-		this->player->draw(this->screen);
 		
+		level0.draw(&this->camera);
+		this->player->update(0, 0, this->delta);
+		level0.update(&this->camera);
 
+		this->player->draw(this->screen,25,25);
 
+		Graphics::Rectangle(screen, *this->player->shape->getX() - 3, *this->player->shape->getY() - 3, 6, 6, czerwony, czerwony);
 
-
-
-
-		/*END DROWING*/
 		SDL_UpdateWindowSurface(this->window);
 
 		frameTime = SDL_GetTicks() - t2;

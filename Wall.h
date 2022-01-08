@@ -3,6 +3,6 @@
 class Wall:public GameObject{
 public:
 	Wall(ColliderShape* shape, SDL_Surface* image = nullptr);
-	void update(double delta,int offsetX,int offsetY) override;
-	void draw(SDL_Surface* screen) override;
+	void update(int offsetX,int offsetY, double delta = 0) override;
+	void draw(SDL_Surface* screen, int offsetX = 0, int offsetY = 0) override;
 };

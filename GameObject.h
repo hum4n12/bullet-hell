@@ -7,7 +7,7 @@ class GameObject{
 protected:
 	int* x;
 	int* y;
-	double speed;
+	int speed;
 	Vector2 direction;
 	SDL_Surface* image;
 public:
@@ -15,6 +15,6 @@ public:
 	GameObject(ColliderShape* shape, SDL_Surface* image = nullptr);
 	SDL_Surface* getImage();
 	void setImage(SDL_Surface* image);
-	virtual void draw(SDL_Surface* screen);
-	virtual void update(double delta,int offsetX, int offsetY) = 0;
+	virtual void draw(SDL_Surface* screen, int offsetX = 0, int offsetY = 0);
+	virtual void update(int offsetX, int offsetY,double delta = 0) = 0;
 };

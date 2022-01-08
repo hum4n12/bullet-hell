@@ -15,7 +15,6 @@ private:
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	SDL_Surface* screen;
-	List gameObjects;
 	Player* player;
 	bool quit;
 	const char* title;

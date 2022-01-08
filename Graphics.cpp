@@ -84,7 +84,6 @@ int* Graphics::loadCSV(const char* path,int size) {
 	int* data = new int[size];
 	FILE* file;
 	file = fopen(path, "r");
-	
 	char temp;
 	int val = 0;
 	int i = 0; //iterator
