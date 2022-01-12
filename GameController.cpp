@@ -71,13 +71,13 @@ void GameController::update() {
 		this->worldTime += this->delta;
 		t1 = t2;
 
-		SDL_FillRect(this->screen, NULL, niebieski);
+		SDL_FillRect(this->screen, NULL, czarny);
 		
 		level0.draw(&this->camera);
-		this->player->update(0, 0, this->delta);
-		level0.update(&this->camera);
-
-		this->player->draw(this->screen,25,25);
+		//this->player->update(0, 0, this->delta);
+		level0.update(&this->camera,this->delta);
+		this->player->draw(this->screen, 25, 25);
+		//this->player->draw(this->screen,25,25);
 
 		Graphics::Rectangle(screen, *this->player->shape->getX() - 3, *this->player->shape->getY() - 3, 6, 6, czerwony, czerwony);
 

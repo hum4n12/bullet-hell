@@ -5,7 +5,7 @@ void Camera::update(int x, int y,Player* player) {
 	this->originY += y;
 	int offsetX = SCREEN_WIDTH / 2;
 	int offsetY = SCREEN_HEIGHT / 2;
-	player->addCoords(x, y);
+	//player->addCoords(x, y);
 
 	//if (this->originX <= offsetX || this->originX >= this->levelWidth-offsetX || this->originY <= offsetY || this->originY >= this->levelHeight - offsetY) {
 	//	if (this->originX <= offsetX) {

@@ -87,7 +87,7 @@ void Level::draw(Camera* camera) {
 
 			if (destX >= 0 - TILE_SIZE && destX <= SCREEN_WIDTH + TILE_SIZE 
 				&& destY >= 0 - TILE_SIZE && destY <= SCREEN_HEIGHT+ TILE_SIZE) {
-				this->tiles[tile].draw(destX, destY);
+				//this->tiles[tile].draw(destX, destY);
 				temp->draw(this->screen,TILE_SIZE/2,TILE_SIZE/2);
 			}
 			rect.x += TILE_SIZE;
@@ -126,10 +126,25 @@ void Level::init(){
 		rect.y += TILE_SIZE;
 	}
 }
+void Level::horizontalMovementCollision(double delta) {
+	this->player->horizontalMovement(delta);
 
-void Level::update(Camera* camera) {
 	for (int i = 0; i < this->gameObjects.getSize(); i++) {
 		GameObject* go = this->gameObjects.get(i);
-		this->player->collision(go, this->screen);
+		printf("%d",go->collision(this->player, this->screen));
 	}
+}
+
+void Level::verticalMovementCollision(double delta) {
+	this->player->verticalMovement(delta);
+
+	for (int i = 0; i < this->gameObjects.getSize(); i++) {
+		GameObject* go = this->gameObjects.get(i);
+		go->collision(this->player, this->screen);
+	}
+}
+
+void Level::update(Camera* camera,double delta) {
+	this->horizontalMovementCollision(delta);
+	this->verticalMovementCollision(delta);
 }

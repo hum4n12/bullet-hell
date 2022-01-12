@@ -24,13 +24,16 @@ private:
 	int tilesSize;
 	SDL_Surface* screen;
 	List gameObjects;
+	List walls;
 	Player* player;
 	bool load(); //0 if cannot load level info
 public:
 	Level(int width,int height,const char* filePath,const char* tilePath,SDL_Surface* screen,Player* player);
 	//returns a list of game objects that are colliders
 	void init();
-	void update(Camera* camera);
+	void update(Camera* camera,double delta);
 	void draw(Camera* camera);
+	void horizontalMovementCollision(double delta);
+	void verticalMovementCollision(double delta);
 };
 

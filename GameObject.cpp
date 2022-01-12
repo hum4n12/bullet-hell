@@ -12,9 +12,39 @@ void GameObject::setImage(SDL_Surface* image) {
 	this->image = image;
 }
 
+Vector2 GameObject::getDirection(){
+	return this->direction;
+}
+
 
 SDL_Surface* GameObject::getImage() {
 	return this->image;
+}
+
+void GameObject::addCoords(int x, int y) {
+	*this->x += x;
+	*this->y += y;
+}
+
+void GameObject::setCoords(int x, int y) {
+	*this->x = x;
+	*this->y = y;
+}
+
+void GameObject::setX(int x){
+	*this->x = x;
+}
+
+void GameObject::setY(int y) {
+	*this->y = y;
+}
+
+void GameObject::addX(int x) {
+	*this->x += x;
+}
+
+void GameObject::addY(int y) {
+	*this->y += y;
 }
 
 void GameObject::draw(SDL_Surface* surface, int offsetX, int offsetY) {

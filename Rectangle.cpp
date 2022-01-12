@@ -19,10 +19,6 @@ bool Rectangle::collision(int x, int y) {
 }
 
 Vector2 Rectangle::nearestPoint(int x, int y) {
-	if (this->lastNearestPoint != nullptr) {
-		printf("a");
-		return *this->lastNearestPoint;
-	}
 	Vector2 pos;
 	int hw = this->width / 2;
 	int hh = this->height / 2;
@@ -34,6 +30,7 @@ Vector2 Rectangle::nearestPoint(int x, int y) {
 
 	if (pos.y > hh) pos.y = hh;
 	else if (pos.y < -hh) pos.y = -hh;
+	//if point is inside of the rectangle
 
 	pos.x += this->x;
 	pos.y += this->y;

@@ -17,9 +17,3 @@ Vector2 ColliderShape::centerVector(int x, int y) {
 
 	return v;
 }
-
-void ColliderShape::setLastNP(int x, int y) {
-	if (this->lastNearestPoint == nullptr) {
-		this->lastNearestPoint = new Vector2{ x,y };
-	}
-}
