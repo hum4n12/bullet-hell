@@ -6,6 +6,8 @@
 Player::Player(Camera* camera,ColliderShape* shape, SDL_Surface* image):GameObject(shape, image) {
 	this->speed = this->CONST_SPEED;
 	this->camera = camera;
+	this->posX = *shape->getX();
+	this->posY = *shape->getY();
 	srand(time(NULL));
 };
 
@@ -50,20 +52,6 @@ void Player::controls(SDL_Event event) {
 	};
 }
 
-bool Player::collision(GameObject* go,SDL_Surface* screen) {
-	/*int width = 25;
-	int height = 25;
-	int czerwony = SDL_MapRGB(screen->format, 0xFF, 0x00, 0x00);
-	
-	Vector2 np = go->shape->nearestPoint(*this->x, *this->y);
-	Graphics::Rectangle(screen, np.x-3, np.y-3,6,6,czerwony,czerwony);
-		
-	if (this->shape->collision(np.x, np.y)) {
-		
-	}*/
-	return false;
-}
-
 void Player::setX(int x) {
 	*this->x = x;
 }
@@ -80,10 +68,9 @@ void Player::horizontalMovement(double delta) {
 		x = x / v;
 		y = y / v;
 	}
-
+	
 	x = this->speed * x * delta;
 	*this->x += x;
-	//this->camera->update(x, *this->y, this);
 }
 
 void Player::verticalMovement(double delta) {
@@ -98,7 +85,6 @@ void Player::verticalMovement(double delta) {
 	y = this->speed * y * delta;
 
 	*this->y += y;
-	//this->camera->update(*this->x, y, this);
 }
 
 void Player::update(int offsetX,int offsetY, double delta) {

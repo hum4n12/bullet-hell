@@ -11,5 +11,6 @@ public:
 	virtual Vector2 nearestPoint(int x, int y) override;
 	virtual void setColliderPoint(int x, int y) override;
 	virtual void draw(SDL_Surface* screen, int offsetX = 0, int offsetY = 0) override;
+	virtual int getSize() override; //returning 
 };
 

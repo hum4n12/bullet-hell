@@ -12,6 +12,9 @@
 
 class GameController {
 private:
+	bool gameStarted = false;
+	Level* currentLevel;
+
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	SDL_Surface* screen;
@@ -20,12 +23,13 @@ private:
 	const char* title;
 	double delta;
 	double worldTime;
-	Camera camera;
+	Camera* camera;
 	//methods
 	void eventHandler();
 public:
 	GameController();
 	void init();
+	void start();
 	//main loop of program
 	void update();
 	void clean();

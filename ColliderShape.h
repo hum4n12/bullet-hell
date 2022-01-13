@@ -14,9 +14,11 @@ public:
 	virtual Vector2 nearestPoint(int x, int y) = 0;
 	virtual void setColliderPoint(int x, int y) = 0;
 	virtual void draw(SDL_Surface* screen, int offsetX = 0, int offsetY = 0) = 0;
-
+	virtual int getSize() = 0;
 	//returns vector2 between center of the shape and given point
 	Vector2 centerVector(int x, int y);
 	int* getX();
 	int* getY();
+	void addX(int x);
+	void addY(int y);
 };

@@ -24,7 +24,7 @@ public:
 	void setImage(SDL_Surface* image);
 	Vector2 getDirection();
 
-	virtual bool collision(GameObject* go, SDL_Surface* screen) = 0;
+	bool collision(GameObject* go);
 	virtual void draw(SDL_Surface* screen, int offsetX = 0, int offsetY = 0);
 	virtual void update(int offsetX, int offsetY,double delta = 0) = 0;
 };

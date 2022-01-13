@@ -17,6 +17,16 @@ Vector2 GameObject::getDirection(){
 }
 
 
+bool GameObject::collision(GameObject* go){
+	Vector2 goNP = go->shape->nearestPoint(*this->x, *this->y);//np = nearest point
+
+	if (this->shape->collision(goNP.x, goNP.y)) {
+		return true;
+	}
+
+	return false;
+}
+
 SDL_Surface* GameObject::getImage() {
 	return this->image;
 }

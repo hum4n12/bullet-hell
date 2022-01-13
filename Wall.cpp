@@ -10,16 +10,10 @@ void Wall::update(int offsetX, int offsetY, double delta) {
 }
 
 void Wall::draw(SDL_Surface* screen,int offsetX, int offsetY){
-	this->shape->draw(screen,offsetX,offsetY);
+	int zielony = SDL_MapRGB(screen->format, 0x00, 0xFF, 0x00);
+
+	Graphics::Rectangle(screen, *this->shape->getX() - offsetX, *this->shape->getY()-offsetY, this->shape->getSize(), this->shape->getSize(),zielony,zielony);
+	//this->shape->draw(screen,offsetX,offsetY);
 	int czerwony = SDL_MapRGB(screen->format, 0xFF, 0x00, 0x00);
 	Graphics::Pixel(screen, *this->x, *this->y, czerwony);
-}
-
-bool Wall::collision(GameObject* go, SDL_Surface* screen){
-	Vector2 goNP = go->shape->nearestPoint(*this->x, *this->y);//np = nearest point
-
-	if (this->shape->collision(goNP.x, goNP.y)) {
-		Vector2 dir = go->getDirection();
-		printf("%d %d \n", dir.x, dir.y);
-	}
 }

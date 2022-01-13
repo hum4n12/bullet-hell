@@ -49,3 +49,7 @@ void Rectangle::draw(SDL_Surface* screen, int offsetX, int offsetY) {
 	this->color = SDL_MapRGB(screen->format, 0x11, 0x11, 0xCC);
 	Graphics::Rectangle(screen,this->x-offsetX,this->y-offsetY,this->width,this->height,this->color,this->color);
 }
+
+int Rectangle::getSize() {
+	return this->width;
+}

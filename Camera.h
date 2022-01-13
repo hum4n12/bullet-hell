@@ -3,14 +3,22 @@
 class Player;
 class Camera{
 public:
-	int x;
-	int y;
-	int originX;
-	int originY;
-	bool follow = true;
-	int levelWidth = 0;
-	int levelHeight = 0;
+	int x = 0;
+	int y = 0;
+	int originX = 0;
+	int originY = 0;
 
-	void update(int x,int y,Player* player);
+	int left = 0;
+	int right = 0;
+	int top = 0;
+	int bottom = 0;
+
+	int offsetX = 0;
+	int offsetY = 0;
+	Player* player;
+
+	Camera(Player* player);
+	void update();
+	void setLevelDimensions(int levelWidth, int levelHeight);
 };
 #include "Player.h"

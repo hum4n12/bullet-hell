@@ -8,6 +8,14 @@ int* ColliderShape::getY() {
 	return &this->y;
 }
 
+void ColliderShape::addX(int x){
+	this->x += x;
+}
+
+void ColliderShape::addY(int Y) {
+	this->y += y;
+}
+
 Vector2 ColliderShape::centerVector(int x, int y) {
 	Vector2 v;
 	
