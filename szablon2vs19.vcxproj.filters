@@ -107,5 +107,8 @@
     <ClInclude Include="Circle.h">
       <Filter>Pliki zasobów</Filter>
     </ClInclude>
+    <ClInclude Include="Vector2f.h">
+      <Filter>Pliki zasobów</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

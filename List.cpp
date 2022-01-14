@@ -11,15 +11,15 @@ void List::push(GameObject* value) {
     newNode->value = value;
     newNode->next = nullptr;
 
-    if (this->head == nullptr && this->tail == nullptr) {
-        this->head = newNode;
-        this->tail = newNode;
-    }
+    if (this->head == nullptr) this->head = newNode;
     else {
-        this->tail->next = newNode;
-        this->tail = newNode;
+        Node* curr = this->head;
+        while (curr->next != nullptr) {
+            curr = curr->next;
+        }
+
+        curr->next = newNode;
     }
-    this->size++;
 }
 
 GameObject* List::pop(){
@@ -35,48 +35,62 @@ GameObject* List::pop(){
         }
         value = next->value;
         this->tail = curr;
-        this->size--;
+        //this->size--;
         delete next;
     }
 
     return value;
 }
 
-GameObject* List::remove(int pos){
-    Node* curr = this->head;
-    Node* prev = nullptr;
-    GameObject* value = nullptr;
+void List::remove(int pos) {
+    Node* curr = this->head, * prev = nullptr;
 
-
-    if (this->head != nullptr && this->tail != nullptr) {
-        int i = 0;
-        while (i < pos) {
-            if (curr->next == nullptr) break;
-            prev = curr;
-            curr = curr->next;
-            i++;
-        }
-        value = curr->value;
-
-        if (curr == this->head) this->head = this->head->next;
-        else prev->next = curr->next;
-
-        this->size--;
-        delete curr;
+    if (this->head == nullptr) {
+        return;
     }
 
-    return value;
-}
+    if (this->getSize() <= pos) {
+        return;
+    }
 
+    if (pos == 0) {
+        this->head = this->head->next;
+        //this->size--;
+        delete curr;
+        return;
+    }
+
+    while (pos-- > 0) {
+        prev = curr;
+        curr = curr->next;
+    }
+    prev->next = curr->next;
+
+    // Delete the node
+    //if(curr != nullptr) this->size--;
+    delete curr;
+}
 
 GameObject* List::get(int pos) {
     Node* curr = this->head;
     GameObject* value = nullptr;
 
+    if (this->getSize() <= pos) {
+        printf("zdarzenie\n");
+    }
+    if (this->head == nullptr) {
+        printf("\n %d \n", this->getSize());
+    }
     int i = 0;
-    while (curr != this->tail && i < pos) {
-        curr = curr->next;
-        i++;
+    if (curr != nullptr) {
+        while (curr != nullptr && curr != this->tail && i < pos) {
+            if (curr->next == curr) {
+                curr = nullptr;
+                break;
+            }
+            curr = curr->next;
+            i++;
+        }
     }
     if(curr != nullptr ) value = curr->value;
 
@@ -84,5 +98,11 @@ GameObject* List::get(int pos) {
 }
 
 int List::getSize() {
-    return this->size;
+    Node* curr = this->head;
+    int size = 0;
+    while (curr != nullptr) {
+        size++;
+        curr = curr->next;
+    }
+    return size;
 }

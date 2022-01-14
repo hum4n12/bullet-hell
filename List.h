@@ -9,7 +9,7 @@ public:
 	List();
 	void push(GameObject* value);
 	GameObject* pop();
-	GameObject* remove(int pos);
+	void remove(int pos);
 	GameObject* get(int pos);
 	int getSize();
 };

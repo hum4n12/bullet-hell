@@ -1,6 +1,6 @@
 #pragma once
 
 struct Vector2 {
-	int x = 0;
-	int y = 0;
+	double x = 0;
+	double y = 0;
 };

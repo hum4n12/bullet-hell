@@ -165,13 +165,18 @@ void Level::draw(Camera* camera) {
 		}
 		/*printf("\n%d", go->getDirection().x);*/
 	}
+	int licznik = 0;
 	for (int i = 0; i < this->bullets.getSize(); i++) {
 		GameObject* bullet = this->bullets.get(i);
-		int destX = *bullet->shape->getX() - camera->x;
-		int destY = *bullet->shape->getY() - camera->y;
-		bullet->setCoords(destX, destY);
-		bullet->draw(this->screen, 0, 0);
+		if (bullet != nullptr) {
+			licznik++;
+			int destX = *bullet->shape->getX() - camera->x;
+			int destY = *bullet->shape->getY() - camera->y;
+			bullet->setCoords(destX, destY);
+			bullet->draw(this->screen, 0, 0);
+		}
 	}
+	printf("\nlicznik: %d", licznik);
 	//this->player->addCoords(-camera->x, -camera->y);
 }
 
@@ -274,6 +279,7 @@ void Level::update(Camera* camera,double delta) {
 	this->bulletsUpdate(delta);
 	camera->update();
 	this->player->addCoords(-camera->x, -camera->y);
+	//printf("\n%d", this->bullets.getSize());
 }
 
 void Level::shoot(double delta) {
@@ -286,20 +292,23 @@ void Level::shoot(double delta) {
 void Level::bulletsUpdate(double delta){
 	for (int i = 0; i < this->bullets.getSize(); i++) {
 		GameObject* bullet = this->bullets.get(i);
-		bullet->horizontalMovement(delta);
-		bullet->verticalMovement(delta);
+		if (bullet != nullptr) {
+			bullet->horizontalMovement(delta);
+			bullet->verticalMovement(delta);
+		}
 	}
 	
+	printf("\n%d\n", this->bullets.getSize());
 	for (int i = this->bullets.getSize()-1; i >= 0; i--) {
 		//printf("\n%d", i);
 		GameObject* bullet = this->bullets.get(i);
-		for (int j = 0; j < this->walls.getSize(); j++) {
-			GameObject* wall = this->walls.get(j);
-			if (wall->collision(bullet)) {
-				GameObject* bl = this->bullets.remove(i);
-				delete bl;
-				break;
+		//if (bullet != nullptr) {
+			for (int j = 0; j < this->walls.getSize(); j++) {
+				GameObject* wall = this->walls.get(j);
+				if (wall->collision(bullet)) {
+					this->bullets.remove(i);
+				}
 			}
-		}
+		//}
 	}
 }
