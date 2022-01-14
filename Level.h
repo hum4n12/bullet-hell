@@ -17,17 +17,23 @@ private:
 	const char* tileSetPath;
 	const char* base = "Base.csv";
 	const char* colliders = "Colliders.csv";
+	const char* enemiesFile = "Enemies.csv";
 	int* displayData;
 	int* collisionData;
+	int* enemyData;
 	int dataSize;
 	Tile* tiles;
 	int tilesSize;
 	SDL_Surface* screen;
 	List walls;
+	List enemies;
+	List bullets;
 	Player* player;
 	Camera* camera;
 	Rectangle* cameraCollider;
 	bool load(); //0 if cannot load level info
+	void horizontalEnemyCollision(GameObject* go);
+	void verticalEnemyCollision(GameObject* go);
 public:
 	Level(int width,int height,const char* filePath,const char* tilePath,SDL_Surface* screen,Player* player,Camera* camera);
 	//returns a list of game objects that are colliders
@@ -36,5 +42,7 @@ public:
 	void draw(Camera* camera);
 	void horizontalMovementCollision(double delta);
 	void verticalMovementCollision(double delta);
+	void shoot(double delta);
+	void bulletsUpdate(double delta);
 };
 

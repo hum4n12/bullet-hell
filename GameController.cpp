@@ -87,6 +87,7 @@ void GameController::update() {
 		this->currentLevel->draw(this->camera);
 		//this->player->draw(this->screen, this->camera->x,this->camera->y);
 		this->player->draw(this->screen, 25 ,25);
+		this->currentLevel->shoot(delta);
 
 		Graphics::Rectangle(screen, *this->player->shape->getX() - 3, *this->player->shape->getY() - 3, 6, 6, czerwony, czerwony);
 

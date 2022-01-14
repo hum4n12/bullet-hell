@@ -19,8 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Circle.cpp" />
     <ClCompile Include="ColliderShape.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameController.cpp" />
@@ -33,8 +36,11 @@
     <ClCompile Include="Wall.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Circle.h" />
     <ClInclude Include="ColliderShape.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="GLOBALS.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GameObject.h" />

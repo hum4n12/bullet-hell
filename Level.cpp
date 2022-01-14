@@ -2,6 +2,7 @@
 #include "Graphics.h"
 #include "Wall.h"
 #include "Rectangle.h"
+#include "Enemy.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -73,6 +74,12 @@ void Level::init() {
 	//loading csv level data
 	this->collisionData = Graphics::loadCSV(path, this->dataSize);
 
+	//loading enemy data
+	strcpy(path, "");
+	strcpy(path, this->filePath);
+	strcat(path, this->enemiesFile);
+	this->enemyData = Graphics::loadCSV(path, this->dataSize);
+
 	Vector2 rect;
 	rect.x = 0;
 	rect.y = 0;
@@ -81,6 +88,7 @@ void Level::init() {
 		rect.x = 0;
 		for (int c = 0; c < this->width; c++) {
 			int tile = this->collisionData[i];
+			int enemy = this->enemyData[i];
 			int destX = rect.x;
 			int destY = rect.y;
 			if (tile >= 0) {
@@ -88,6 +96,15 @@ void Level::init() {
 				destY -= TILE_SIZE/2;
 				GameObject* temp = new Wall(new Rectangle(destX, destY, TILE_SIZE, TILE_SIZE, 0));
 				this->walls.push(temp);
+			}
+			
+			destX = rect.x;
+			destY = rect.y;
+			if (enemy >= 0) {
+				destX -= 25;
+				destY -= 25;
+				GameObject* temp = new Enemy(this->player,this->camera,&this->bullets,400, new Rectangle(destX,destY,50,50,0));
+				this->enemies.push(temp);
 			}
 			rect.x += TILE_SIZE;
 			i++;
@@ -102,13 +119,15 @@ void Level::draw(Camera* camera) {
 	rect.y = 0;
 	int i = 0;
 	int goIterator = 0;
+	int enemyIterator = 0;
 	GameObject* temp = nullptr;
-
+	
 	for (int r = 0; r < this->height; r++) {
 		rect.x = 0;
 		for (int c = 0; c < this->width; c++) {
 			int tile = this->displayData[i];
 			int collider = this->collisionData[i];
+			int enemy = this->enemyData[i];
 			int destX = rect.x;
 			int destY = rect.y;
 
@@ -117,33 +136,96 @@ void Level::draw(Camera* camera) {
 				destX = *temp->shape->getX() - camera->x;
 				destY = *temp->shape->getY() - camera->y;
 
-				temp->update(destX , destY);
+				temp->setCoords(destX , destY);
 				goIterator++;
 			}
+
 			destX = rect.x - camera->originX + SCREEN_WIDTH/2 - TILE_SIZE /2;
 			destY = rect.y - camera->originY + SCREEN_HEIGHT/2 - TILE_SIZE/2;
 
 			if (destX >= 0 - TILE_SIZE && destX <= SCREEN_WIDTH + TILE_SIZE 
 				&& destY >= 0 - TILE_SIZE && destY <= SCREEN_HEIGHT+ TILE_SIZE) {
-				this->tiles[tile].draw(destX, destY);
-				//temp->draw(this->screen,TILE_SIZE/2,TILE_SIZE/2);
+				//this->tiles[tile].draw(destX, destY);
+				temp->draw(this->screen,32,32);
 			}
 			rect.x += TILE_SIZE;
 			i++;
 		}
 		rect.y += TILE_SIZE;
 	}
+	for (int i = 0; i < this->enemies.getSize(); i++) {
+		GameObject* go = this->enemies.get(i);
+		int destX = *go->shape->getX() - camera->x;
+		int destY = *go->shape->getY() - camera->y;
+		go->setCoords(destX, destY);
+		if (
+			abs(destX - *this->player->shape->getX()) <= SCREEN_WIDTH &&
+			abs(destY - *this->player->shape->getY()) <= SCREEN_HEIGHT) {
+			go->draw(this->screen,go->shape->getSize()/2,go->shape->getSize() / 2);
+		}
+		/*printf("\n%d", go->getDirection().x);*/
+	}
+	for (int i = 0; i < this->bullets.getSize(); i++) {
+		GameObject* bullet = this->bullets.get(i);
+		int destX = *bullet->shape->getX() - camera->x;
+		int destY = *bullet->shape->getY() - camera->y;
+		bullet->setCoords(destX, destY);
+		bullet->draw(this->screen, 0, 0);
+	}
 	//this->player->addCoords(-camera->x, -camera->y);
+}
+
+void Level::horizontalEnemyCollision(GameObject* go) {
+	int offset = 0;
+	for (int i = 0; i < this->enemies.getSize(); i++) {
+		GameObject* enemy = this->enemies.get(i);
+		if (go->collision(enemy)) {
+			offset = enemy->shape->getSize() / 2 + go->shape->getSize() / 2;
+			if (enemy->getDirection().x < 0) {
+				enemy->setX(*go->shape->getX() + offset);
+			}
+			else if (enemy->getDirection().x > 0) {
+				enemy->setX(*go->shape->getX() - offset);
+			}
+		}
+	}
+}
+
+void Level::verticalEnemyCollision(GameObject* go) {
+	int offset = 0;
+	for (int i = 0; i < this->enemies.getSize(); i++) {
+		GameObject* enemy = this->enemies.get(i);
+		if (go->collision(enemy)) {
+			offset = enemy->shape->getSize() / 2 + go->shape->getSize() / 2;
+			if (enemy->getDirection().y < 0) {
+				enemy->setY(*go->shape->getY() + offset);
+			}
+			else if (enemy->getDirection().y > 0) {
+				enemy->setY(*go->shape->getY() - offset);
+			}
+		}
+	}
 }
 
 void Level::horizontalMovementCollision(double delta) {
 	this->player->horizontalMovement(delta);
+
+	for (int i = 0; i < this->enemies.getSize(); i++) {
+		GameObject* enemy = this->enemies.get(i);
+		enemy->update(0, 0, delta);
+		enemy->horizontalMovement(delta);
+		/*printf("\n%d", go->getDirection().x);*/
+	}
+
 	Vector2 playerDirection = this->player->getDirection();
 
 	int offset = 0;
 
 	for (int i = 0; i < this->walls.getSize(); i++) {
 		GameObject* go = this->walls.get(i);
+
+		this->horizontalEnemyCollision(go);
+
 		if (go->collision(this->player)) {
 			offset = this->player->shape->getSize()/2 +go->shape->getSize()/2;
 			if (playerDirection.x < 0) {
@@ -160,10 +242,20 @@ void Level::verticalMovementCollision(double delta) {
 	this->player->verticalMovement(delta);
 	Vector2 playerDirection = this->player->getDirection();
 
+	for (int i = 0; i < this->enemies.getSize(); i++) {
+		GameObject* enemy = this->enemies.get(i);
+		enemy->update(0, 0, delta);
+		enemy->verticalMovement(delta);
+		/*printf("\n%d", go->getDirection().x);*/
+	}
+
 	int offset = 0;
 
 	for (int i = 0; i < this->walls.getSize(); i++) {
 		GameObject* go = this->walls.get(i);
+
+		this->verticalEnemyCollision(go);
+
 		if (go->collision(this->player)) {
 			offset = this->player->shape->getSize()/2 + go->shape->getSize()/2;
 			if (playerDirection.y < 0) {
@@ -179,6 +271,35 @@ void Level::verticalMovementCollision(double delta) {
 void Level::update(Camera* camera,double delta) {
 	this->horizontalMovementCollision(delta);
 	this->verticalMovementCollision(delta);
+	this->bulletsUpdate(delta);
 	camera->update();
 	this->player->addCoords(-camera->x, -camera->y);
+}
+
+void Level::shoot(double delta) {
+	for (int i = 0; i < this->enemies.getSize(); i++) {
+		GameObject* enemy = this->enemies.get(i);
+		enemy->time(delta);
+	}
+}
+
+void Level::bulletsUpdate(double delta){
+	for (int i = 0; i < this->bullets.getSize(); i++) {
+		GameObject* bullet = this->bullets.get(i);
+		bullet->horizontalMovement(delta);
+		bullet->verticalMovement(delta);
+	}
+	
+	for (int i = this->bullets.getSize()-1; i >= 0; i--) {
+		//printf("\n%d", i);
+		GameObject* bullet = this->bullets.get(i);
+		for (int j = 0; j < this->walls.getSize(); j++) {
+			GameObject* wall = this->walls.get(j);
+			if (wall->collision(bullet)) {
+				GameObject* bl = this->bullets.remove(i);
+				delete bl;
+				break;
+			}
+		}
+	}
 }

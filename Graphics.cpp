@@ -71,6 +71,18 @@ void Graphics::Rectangle(SDL_Surface* screen, int x, int y, int l, int k, Uint32
 		Graphics::Line(screen, x + 1, i, l - 2, 1, 0, fillColor);
 };
 
+void Graphics::Circle(SDL_Surface* screen, int x, int y, int radius, Uint32 color) {
+	//horizontal
+	for (int i = x - radius; i <= x + radius; i++) {
+		//vertical
+		for (int j = y - radius; j <= y + radius; j++) {
+			if (pow((i - x), 2) + pow(j - y, 2) <= pow(radius, 2)) {
+				Graphics::Pixel(screen,i,j,color);
+			}
+		}
+	}
+}
+
 
 void Graphics::loadImage(const char* path, SDL_Surface* imageDest) {
 	imageDest = SDL_LoadBMP(path);

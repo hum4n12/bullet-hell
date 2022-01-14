@@ -17,8 +17,6 @@ public:
 	void controls(SDL_Event event);
 	void setX(int x);
 	void setY(int y);
-	void horizontalMovement(double delta);
-	void verticalMovement(double delta);
 	void update(int offsetX,int offsetY, double delta = 0) override;
 };
 

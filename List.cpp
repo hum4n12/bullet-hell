@@ -1,5 +1,5 @@
 #include "List.h"
-
+#include <stdio.h>
 List::List() {
 	this->head = nullptr;
 	this->tail = nullptr;
@@ -43,21 +43,23 @@ GameObject* List::pop(){
 }
 
 GameObject* List::remove(int pos){
-    Node* curr = nullptr;
-    Node* next = this->head;
+    Node* curr = this->head;
     Node* prev = nullptr;
     GameObject* value = nullptr;
 
+
     if (this->head != nullptr && this->tail != nullptr) {
         int i = 0;
-        while (next != this->tail && i < pos) {
+        while (i < pos) {
+            if (curr->next == nullptr) break;
             prev = curr;
-            curr = next;
-            next = next->next;
+            curr = curr->next;
             i++;
         }
-        prev->next = next;
         value = curr->value;
+
+        if (curr == this->head) this->head = this->head->next;
+        else prev->next = curr->next;
 
         this->size--;
         delete curr;

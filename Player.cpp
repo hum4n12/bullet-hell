@@ -1,14 +1,9 @@
 #include "Player.h"
 #include <stdio.h>
-#include <random>
-#include <time.h>
 
 Player::Player(Camera* camera,ColliderShape* shape, SDL_Surface* image):GameObject(shape, image) {
 	this->speed = this->CONST_SPEED;
 	this->camera = camera;
-	this->posX = *shape->getX();
-	this->posY = *shape->getY();
-	srand(time(NULL));
 };
 
 void Player::controls(SDL_Event event) {
@@ -60,40 +55,13 @@ void Player::setY(int y) {
 	*this->y = y;
 }
 
-void Player::horizontalMovement(double delta) {
-	double x = this->direction.x;
-	double y = this->direction.y;
-	double v = sqrt(x * x + y * y);
-	if (v > 0) {
-		x = x / v;
-		y = y / v;
-	}
-	
-	x = this->speed * x * delta;
-	*this->x += x;
-}
-
-void Player::verticalMovement(double delta) {
-	double x = this->direction.x;
-	double y = this->direction.y;
-	double v = sqrt(x * x + y * y);
-	if (v > 0) {
-		x = x / v;
-		y = y / v;
-	}
-	/*printf("%d %d\n", *this->x, *this->y);*/
-	y = this->speed * y * delta;
-
-	*this->y += y;
-}
-
 void Player::update(int offsetX,int offsetY, double delta) {
 	/*printf("\n %d %d", *this->x, *this->y);*/
 	//normalizing vectors
 	double x = this->direction.x;
 	double y = this->direction.y;
 	double v = sqrt(x * x + y * y);
-	if (v > 0) {
+	if (v > 0) { 
 		x = x / v;
 		y = y / v;
 	}

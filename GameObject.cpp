@@ -66,3 +66,37 @@ void GameObject::draw(SDL_Surface* surface, int offsetX, int offsetY) {
 		this->shape->draw(surface,offsetX,offsetY);
 	}
 }
+
+void GameObject::horizontalMovement(double delta) {
+	double x = this->direction.x;
+	double y = this->direction.y;
+	double v = sqrt(x * x + y * y);
+	if (v > 0) {
+		x = x / v;
+		y = y / v;
+	}
+
+	x = this->speed * x * delta;
+	*this->x += x;
+}
+
+void GameObject::verticalMovement(double delta) {
+	double x = this->direction.x;
+	double y = this->direction.y;
+	double v = sqrt(x * x + y * y);
+	if (v > 0) {
+		x = x / v;
+		y = y / v;
+	}
+	y = this->speed * y * delta;
+
+	*this->y += y;
+}
+
+void GameObject::collisionReact(int x, int y)
+{
+}
+
+void GameObject::time(double delta) {
+
+}
