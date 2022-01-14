@@ -4,7 +4,7 @@
 
 void Graphics::String(SDL_Surface* screen, int x, int y, const char* text, SDL_Surface* charset){
 
-	int fontSize = 8;
+	int fontSize = 16;
 	int px, py, c;
 	SDL_Rect s, d;
 	s.w = fontSize;
@@ -84,12 +84,13 @@ void Graphics::Circle(SDL_Surface* screen, int x, int y, int radius, Uint32 colo
 }
 
 
-void Graphics::loadImage(const char* path, SDL_Surface* imageDest) {
-	imageDest = SDL_LoadBMP(path);
+SDL_Surface* Graphics::loadImage(const char* path) {
+	SDL_Surface* imageDest = SDL_LoadBMP(path);
 
 	if (imageDest == nullptr) {
-		printf("SDL_LoadBMP(cs8x8.bmp) error: %s\n", SDL_GetError());
+		printf("SDL_LoadBMP error: %s\n", SDL_GetError());
 	};
+	return imageDest;
 }
 
 int* Graphics::loadCSV(const char* path,int size) {

@@ -18,6 +18,8 @@ private:
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 	SDL_Surface* screen;
+	SDL_Surface* charset;
+
 	Player* player;
 	bool quit;
 	const char* title;

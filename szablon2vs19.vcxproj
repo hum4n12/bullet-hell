@@ -52,7 +52,6 @@
     <ClInclude Include="Rectangle.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="Vector2.h" />
-    <ClInclude Include="Vector2f.h" />
     <ClInclude Include="Wall.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

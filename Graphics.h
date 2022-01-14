@@ -24,7 +24,7 @@ public:
 	static void Circle(SDL_Surface* screen, int x, int y, int radius, Uint32 color);
 
 	//load image
-	static void loadImage(const char* path, SDL_Surface* imageDest);
+	static SDL_Surface* loadImage(const char* path);
 
 	//load csv
 	static int* loadCSV(const char* path, int size);

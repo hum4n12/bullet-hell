@@ -145,7 +145,7 @@ void Level::draw(Camera* camera) {
 
 			if (destX >= 0 - TILE_SIZE && destX <= SCREEN_WIDTH + TILE_SIZE 
 				&& destY >= 0 - TILE_SIZE && destY <= SCREEN_HEIGHT+ TILE_SIZE) {
-				//this->tiles[tile].draw(destX, destY);
+				this->tiles[tile].draw(destX, destY);
 				temp->draw(this->screen,32,32);
 			}
 			rect.x += TILE_SIZE;
@@ -302,13 +302,14 @@ void Level::bulletsUpdate(double delta){
 	for (int i = this->bullets.getSize()-1; i >= 0; i--) {
 		//printf("\n%d", i);
 		GameObject* bullet = this->bullets.get(i);
-		//if (bullet != nullptr) {
-			for (int j = 0; j < this->walls.getSize(); j++) {
-				GameObject* wall = this->walls.get(j);
-				if (wall->collision(bullet)) {
-					this->bullets.remove(i);
-				}
+		
+		for (int j = 0; j < this->walls.getSize(); j++) {
+			GameObject* wall = this->walls.get(j);
+			if (wall->collision(bullet)) {
+				this->bullets.remove(i);
+				break;
 			}
-		//}
+		}
+
 	}
 }

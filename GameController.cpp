@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "GameController.h"
+#define MAX_STRING 128
 
 GameController::GameController() {
 	this->title = "Explore the Gungeon";
@@ -12,6 +13,7 @@ GameController::GameController() {
 	this->player = nullptr;
 	this->camera = nullptr;
 	this->currentLevel = nullptr;
+	this->charset = Graphics::loadImage("./graphics/cs8x8.bmp");
 	//this->screen = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 };
 
@@ -47,7 +49,7 @@ void GameController::start() {
 	delete this->currentLevel;
 	delete this->player;
 	delete this->camera;
-
+	this->worldTime = 0;
 
 	this->player = new Player(this->camera, new Rectangle(playerX, playerY, PLAYER_WIDTH, PLAYER_HEIGHT, 0));
 	this->camera = new Camera(this->player);
@@ -70,7 +72,7 @@ void GameController::update() {
 
 	//Level level0(50,50,"./levels/0/","./levels/0/tileset.bmp",this->screen,this->player,this->camera);
 	int czerwony = SDL_MapRGB(screen->format, 0xFF, 0x00, 0x00);
-
+	char text[MAX_STRING];
 	this->start();
 	while (!this->quit) {
 		this->eventHandler();
@@ -90,6 +92,12 @@ void GameController::update() {
 		this->currentLevel->shoot(delta);
 
 		Graphics::Rectangle(screen, *this->player->shape->getX() - 3, *this->player->shape->getY() - 3, 6, 6, czerwony, czerwony);
+
+
+		//static drawing
+		sprintf(text, "Elapsed time: = %.1lf s",this->worldTime);
+		Graphics::String(this->screen, 0, 0, text, this->charset);
+		//Graphics::String(screen, screen->w / 2 - strlen(text) * 8 / 2, 10, text, charset);*/
 
 		SDL_UpdateWindowSurface(this->window);
 
