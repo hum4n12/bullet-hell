@@ -46,6 +46,10 @@
     <ClCompile Include="Circle.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
+    <ClCompile Include="BulletKin.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Shogun.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Pliki zasobów">
@@ -107,5 +111,12 @@
     <ClInclude Include="Circle.h">
       <Filter>Pliki zasobów</Filter>
     </ClInclude>
+    <ClInclude Include="EnemiesList.h">
+      <Filter>Pliki zasobów</Filter>
+    </ClInclude>
+    <ClInclude Include="BulletKin.h">
+      <Filter>Pliki zasobów</Filter>
+    </ClInclude>
+    <ClInclude Include="Shogun.h" />
   </ItemGroup>
 </Project>

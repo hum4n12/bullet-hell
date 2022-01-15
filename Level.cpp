@@ -2,9 +2,11 @@
 #include "Graphics.h"
 #include "Wall.h"
 #include "Rectangle.h"
-#include "Enemy.h"
 #include <stdio.h>
 #include <string.h>
+#include "EnemiesList.h"
+#include "BulletKin.h"
+#include "Shogun.h"
 
 Level::Level(int width, int height, const char* filePath,const char* tileSetPath, SDL_Surface* screen,Player* player,Camera* camera){
 	this->width = width;
@@ -101,9 +103,19 @@ void Level::init() {
 			destX = rect.x;
 			destY = rect.y;
 			if (enemy >= 0) {
-				destX -= 25;
-				destY -= 25;
-				GameObject* temp = new Enemy(this->player,this->camera,&this->bullets,400, new Rectangle(destX,destY,50,50,0));
+				EnemiesList e;
+				GameObject* temp = nullptr;
+				switch (enemy) {
+					case BULLET_KIN:
+						temp = new Shogun(this->player, &this->bullets, destX, destY);
+						break;
+					default:
+						/*temp = new BulletKin(this->player, &this->bullets, destX, destY);*/
+						temp = new Shogun(this->player, &this->bullets, destX, destY);
+						break;
+				}
+				Vector2 offset = temp->shape->getOffset();
+				temp->addCoords(-offset.x, -offset.y);
 				this->enemies.push(temp);
 			}
 			rect.x += TILE_SIZE;
@@ -161,22 +173,21 @@ void Level::draw(Camera* camera) {
 		if (
 			abs(destX - *this->player->shape->getX()) <= SCREEN_WIDTH &&
 			abs(destY - *this->player->shape->getY()) <= SCREEN_HEIGHT) {
-			go->draw(this->screen,go->shape->getSize()/2,go->shape->getSize() / 2);
+
+			Vector2 offset = go->shape->getOffset();
+			go->draw(this->screen,(int)offset.x, (int)offset.y);
 		}
 		/*printf("\n%d", go->getDirection().x);*/
 	}
-	int licznik = 0;
 	for (int i = 0; i < this->bullets.getSize(); i++) {
 		GameObject* bullet = this->bullets.get(i);
 		if (bullet != nullptr) {
-			licznik++;
 			int destX = *bullet->shape->getX() - camera->x;
 			int destY = *bullet->shape->getY() - camera->y;
 			bullet->setCoords(destX, destY);
 			bullet->draw(this->screen, 0, 0);
 		}
 	}
-	printf("\nlicznik: %d", licznik);
 	//this->player->addCoords(-camera->x, -camera->y);
 }
 
@@ -185,7 +196,9 @@ void Level::horizontalEnemyCollision(GameObject* go) {
 	for (int i = 0; i < this->enemies.getSize(); i++) {
 		GameObject* enemy = this->enemies.get(i);
 		if (go->collision(enemy)) {
-			offset = enemy->shape->getSize() / 2 + go->shape->getSize() / 2;
+			Vector2 enemyOffset = enemy->shape->getOffset();
+			Vector2 goOffset = go->shape->getOffset();
+			offset = (int)enemyOffset.x + (int)goOffset.x;
 			if (enemy->getDirection().x < 0) {
 				enemy->setX(*go->shape->getX() + offset);
 			}
@@ -201,7 +214,9 @@ void Level::verticalEnemyCollision(GameObject* go) {
 	for (int i = 0; i < this->enemies.getSize(); i++) {
 		GameObject* enemy = this->enemies.get(i);
 		if (go->collision(enemy)) {
-			offset = enemy->shape->getSize() / 2 + go->shape->getSize() / 2;
+			Vector2 enemyOffset = enemy->shape->getOffset();
+			Vector2 goOffset = go->shape->getOffset();
+			offset = (int)enemyOffset.y + (int)goOffset.y;
 			if (enemy->getDirection().y < 0) {
 				enemy->setY(*go->shape->getY() + offset);
 			}
@@ -232,7 +247,9 @@ void Level::horizontalMovementCollision(double delta) {
 		this->horizontalEnemyCollision(go);
 
 		if (go->collision(this->player)) {
-			offset = this->player->shape->getSize()/2 +go->shape->getSize()/2;
+			Vector2 playerOffset = this->player->shape->getOffset();
+			Vector2 goOffset = go->shape->getOffset();
+			offset = (int)playerOffset.x + (int)goOffset.x;
 			if (playerDirection.x < 0) {
 				this->player->setX(*go->shape->getX() + offset);
 			}
@@ -262,7 +279,9 @@ void Level::verticalMovementCollision(double delta) {
 		this->verticalEnemyCollision(go);
 
 		if (go->collision(this->player)) {
-			offset = this->player->shape->getSize()/2 + go->shape->getSize()/2;
+			Vector2 playerOffset = this->player->shape->getOffset();
+			Vector2 goOffset = go->shape->getOffset();
+			offset = (int)playerOffset.y + (int)goOffset.y;
 			if (playerDirection.y < 0) {
 				this->player->setY(*go->shape->getY() + offset);
 			}
@@ -298,7 +317,6 @@ void Level::bulletsUpdate(double delta){
 		}
 	}
 	
-	printf("\n%d\n", this->bullets.getSize());
 	for (int i = this->bullets.getSize()-1; i >= 0; i--) {
 		//printf("\n%d", i);
 		GameObject* bullet = this->bullets.get(i);

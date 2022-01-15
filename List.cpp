@@ -79,7 +79,7 @@ GameObject* List::get(int pos) {
         printf("zdarzenie\n");
     }
     if (this->head == nullptr) {
-        printf("\n %d \n", this->getSize());
+        //printf("\n %d \n", this->getSize());
     }
     int i = 0;
     if (curr != nullptr) {

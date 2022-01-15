@@ -3,6 +3,7 @@
 #include<stdio.h>
 #include<string.h>
 #include "GameController.h"
+#include <time.h>
 
 extern "C" {
 #include"./SDL2-2.0.10/include/SDL.h"
@@ -26,6 +27,7 @@ extern "C"
 
 int main(int arg, char** argv) {
 	GameController GC;
+	srand(time(NULL));
 
 	GC.init();
 	GC.update();

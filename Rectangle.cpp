@@ -46,10 +46,15 @@ void Rectangle::setColliderPoint(int x, int y) {
 }
 
 void Rectangle::draw(SDL_Surface* screen, int offsetX, int offsetY) {
-	this->color = SDL_MapRGB(screen->format, 0x11, 0x11, 0xCC);
+	if(this->color == 0) this->color = SDL_MapRGB(screen->format, 0x11, 0x11, 0xCC);
 	int czerwony = SDL_MapRGB(screen->format, 0xFF, 0x00, 0x00);
 	Graphics::Rectangle(screen,this->x-offsetX,this->y-offsetY,this->width,this->height,this->color,this->color);
 	Graphics::Rectangle(screen, this->x - 3, this->y - 3, 6, 6, czerwony, czerwony);
+}
+
+Vector2 Rectangle::getOffset()
+{
+	return Vector2{ (double)this->width / 2,(double)this->height / 2 };
 }
 
 int Rectangle::getSize() {
