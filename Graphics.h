@@ -7,6 +7,8 @@ public:
 	static const Uint32 blue = 255;
 	static const Uint32 yellow = 16776960;
 	static const Uint32 orange = 16738048;
+	static const Uint32 cyan = 65535;
+
 	// draw a text txt on surface screen, starting from the point (x, y) charset is a 128x128 bitmap containing character images
 	static void String(SDL_Surface* screen, int x, int y, const char* text, SDL_Surface* charset);
 

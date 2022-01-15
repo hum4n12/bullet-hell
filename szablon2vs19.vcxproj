@@ -25,9 +25,12 @@
     <ClCompile Include="Circle.cpp" />
     <ClCompile Include="ColliderShape.cpp" />
     <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="ExplosiveBullet.cpp" />
+    <ClCompile Include="Fuselier.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GameController.cpp" />
+    <ClCompile Include="Knight.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="List.cpp" />
     <ClCompile Include="main.cpp" />
@@ -35,7 +38,9 @@
     <ClCompile Include="Rectangle.cpp" />
     <ClCompile Include="Shogun.cpp" />
     <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="TShape.cpp" />
     <ClCompile Include="Wall.cpp" />
+    <ClCompile Include="Zone.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bullet.h" />
@@ -45,10 +50,13 @@
     <ClInclude Include="ColliderShape.h" />
     <ClInclude Include="EnemiesList.h" />
     <ClInclude Include="Enemy.h" />
+    <ClInclude Include="ExplosiveBullet.h" />
+    <ClInclude Include="Fuselier.h" />
     <ClInclude Include="GLOBALS.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameController.h" />
+    <ClInclude Include="Knight.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="List.h" />
     <ClInclude Include="Node.h" />
@@ -56,8 +64,10 @@
     <ClInclude Include="Rectangle.h" />
     <ClInclude Include="Shogun.h" />
     <ClInclude Include="Tile.h" />
+    <ClInclude Include="TShape.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Wall.h" />
+    <ClInclude Include="Zone.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

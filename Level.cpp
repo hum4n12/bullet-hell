@@ -7,6 +7,8 @@
 #include "EnemiesList.h"
 #include "BulletKin.h"
 #include "Shogun.h"
+#include "Fuselier.h"
+#include "Knight.h"
 
 Level::Level(int width, int height, const char* filePath,const char* tileSetPath, SDL_Surface* screen,Player* player,Camera* camera){
 	this->width = width;
@@ -107,11 +109,15 @@ void Level::init() {
 				GameObject* temp = nullptr;
 				switch (enemy) {
 					case BULLET_KIN:
-						temp = new Shogun(this->player, &this->bullets, destX, destY);
+						//temp = new Fuselier(this->player,&this->bullets,destX,destY);
+						//temp = new Shogun(this->player, &this->bullets, destX, destY);
+						temp = new Knight(this->player, &this->bullets, destX, destY);
 						break;
 					default:
 						/*temp = new BulletKin(this->player, &this->bullets, destX, destY);*/
-						temp = new Shogun(this->player, &this->bullets, destX, destY);
+						//temp = new Shogun(this->player, &this->bullets, destX, destY);
+						//temp = new Fuselier(this->player, &this->bullets, destX, destY);
+						temp = new Knight(this->player, &this->bullets, destX, destY);
 						break;
 				}
 				Vector2 offset = temp->shape->getOffset();
@@ -232,7 +238,7 @@ void Level::horizontalMovementCollision(double delta) {
 
 	for (int i = 0; i < this->enemies.getSize(); i++) {
 		GameObject* enemy = this->enemies.get(i);
-		enemy->update(0, 0, delta);
+		enemy->update(this->camera->x, 0, delta);
 		enemy->horizontalMovement(delta);
 		/*printf("\n%d", go->getDirection().x);*/
 	}
@@ -266,7 +272,7 @@ void Level::verticalMovementCollision(double delta) {
 
 	for (int i = 0; i < this->enemies.getSize(); i++) {
 		GameObject* enemy = this->enemies.get(i);
-		enemy->update(0, 0, delta);
+		enemy->update(0, this->camera->y, delta);
 		enemy->verticalMovement(delta);
 		/*printf("\n%d", go->getDirection().x);*/
 	}
@@ -324,6 +330,7 @@ void Level::bulletsUpdate(double delta){
 		for (int j = 0; j < this->walls.getSize(); j++) {
 			GameObject* wall = this->walls.get(j);
 			if (wall->collision(bullet)) {
+				bullet->collisionReact(0,0);
 				this->bullets.remove(i);
 				break;
 			}

@@ -57,6 +57,10 @@ void GameObject::addY(int y) {
 	*this->y += y;
 }
 
+void GameObject::setSpeed(int speed){
+	this->speed = speed;
+}
+
 void GameObject::draw(SDL_Surface* surface, int offsetX, int offsetY) {
 	
 	if (this->image != nullptr) {

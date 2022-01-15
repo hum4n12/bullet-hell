@@ -17,3 +17,13 @@ void Wall::draw(SDL_Surface* screen,int offsetX, int offsetY){
 	int czerwony = SDL_MapRGB(screen->format, 0xFF, 0x00, 0x00);
 	Graphics::Pixel(screen, *this->x, *this->y, czerwony);
 }
+
+bool Wall::collision(GameObject* go) {
+	Vector2 goNP = go->shape->wallCollision(*this->x, *this->y);//np = nearest point
+
+	if (this->shape->collision(goNP.x, goNP.y)) {
+		return true;
+	}
+
+	return false;
+}
