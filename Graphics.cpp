@@ -3,14 +3,15 @@
 #include <stdio.h>
 
 void Graphics::String(SDL_Surface* screen, int x, int y, const char* text, SDL_Surface* charset){
-
-	int fontSize = 16;
+	int fontSize = FONT_SIZE;
 	int px, py, c;
 	SDL_Rect s, d;
 	s.w = fontSize;
 	s.h = fontSize;
 	d.w = fontSize;
 	d.h = fontSize;
+
+	SDL_SetColorKey(charset, 1, 0);
 	while (*text) {
 		c = *text & 255;
 		px = (c % 16) * fontSize;
@@ -116,4 +117,31 @@ int* Graphics::loadCSV(const char* path,int size) {
 
 	fclose(file);
 	return data;
+}
+
+Vector2 Graphics::countCSV(const char* path) {
+	Vector2 size = { 0,0 };
+
+	FILE* file;
+	file = fopen(path, "r");
+	char temp;
+	int i = 0; //iterator
+	temp = fgetc(file);
+	bool countColumns = true;
+
+	while (!feof(file)) {
+		if (temp == ','){ 
+			if (countColumns) size.x++;
+		}
+		else if (temp == '\n' || temp == 10) {
+			size.y++;
+			countColumns = false;
+		}
+		temp = fgetc(file);
+	}
+
+	size.x++; // one ',' is missing
+	fclose(file);
+
+	return size;
 }

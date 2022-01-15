@@ -55,6 +55,7 @@
     <ClCompile Include="Knight.cpp" />
     <ClCompile Include="TShape.cpp" />
     <ClCompile Include="Zone.cpp" />
+    <ClCompile Include="Button.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Pliki zasobów">
@@ -128,5 +129,9 @@
     <ClInclude Include="Knight.h" />
     <ClInclude Include="TShape.h" />
     <ClInclude Include="Zone.h" />
+    <ClInclude Include="States.h">
+      <Filter>Pliki zasobów</Filter>
+    </ClInclude>
+    <ClInclude Include="Button.h" />
   </ItemGroup>
 </Project>

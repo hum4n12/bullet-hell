@@ -301,6 +301,7 @@ void Level::verticalMovementCollision(double delta) {
 void Level::update(Camera* camera,double delta) {
 	this->horizontalMovementCollision(delta);
 	this->verticalMovementCollision(delta);
+	this->player->update(0,0,delta);
 	this->bulletsUpdate(delta);
 	camera->update();
 	this->player->addCoords(-camera->x, -camera->y);
@@ -340,7 +341,10 @@ void Level::bulletsUpdate(double delta){
 
 		if (bullet != nullptr) {
 			if (bullet->customFlag == 0) {
-				if (this->player->collision(bullet)) {
+				printf("\n%d", this->player->getInvicibility());
+				if (!this->player->getInvicibility() && this->player->collision(bullet)) {
+					this->player->hp--;
+					this->player->setInvicibility();
 					bullet->collisionReact(0, 0);
 					this->bullets.remove(i);
 					delete bullet;

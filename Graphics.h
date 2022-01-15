@@ -1,5 +1,6 @@
 #pragma once
 #include "./SDL2-2.0.10/include/SDL.h"
+#include "Vector2.h"
 class Graphics{
 public:
 	//static const Uint32 red = 16711680;
@@ -10,6 +11,7 @@ public:
 	static const Uint32 orange = 16738048;
 	static const Uint32 cyan = 65535;
 	static const Uint32 white = 16777215;
+	static const Uint32 gray = 3158064;
 
 	// draw a text txt on surface screen, starting from the point (x, y) charset is a 128x128 bitmap containing character images
 	static void String(SDL_Surface* screen, int x, int y, const char* text, SDL_Surface* charset);
@@ -33,6 +35,9 @@ public:
 
 	//load csv
 	static int* loadCSV(const char* path, int size);
+
+	//count rows and columns
+	static Vector2 countCSV(const char* path2);
 
 };
 

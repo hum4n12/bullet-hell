@@ -97,6 +97,19 @@ GameObject* List::get(int pos) {
     return value;
 }
 
+void List::clear(){
+    Node* curr = this->head->next;
+
+    do {
+        delete this->head;
+        this->head = curr;
+        curr = curr->next;
+    } while (curr != nullptr);
+
+    delete head;
+    this->head = nullptr;
+}
+
 int List::getSize() {
     Node* curr = this->head;
     int size = 0;

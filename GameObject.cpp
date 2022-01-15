@@ -16,6 +16,11 @@ Vector2 GameObject::getDirection(){
 	return this->direction;
 }
 
+bool GameObject::isDead()
+{
+	return (this->hp <= 0 );
+}
+
 
 bool GameObject::collision(GameObject* go){
 	Vector2 goNP = go->shape->nearestPoint(*this->x, *this->y);//np = nearest point

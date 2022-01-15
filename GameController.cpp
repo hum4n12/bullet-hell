@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "GameController.h"
-#define MAX_STRING 128
+#include "States.h"
+#include "Button.h"
+#define HEALTHBAR_WIDTH 313
 
 GameController::GameController() {
 	this->title = "Explore the Gungeon";
@@ -14,6 +16,9 @@ GameController::GameController() {
 	this->camera = nullptr;
 	this->currentLevel = nullptr;
 	this->charset = Graphics::loadImage("./graphics/cs8x8.bmp");
+	this->mainMenuBackground = Graphics::loadImage("./graphics/main_menu.bmp");
+	this->levelMenuBackground = Graphics::loadImage("./graphics/menu.bmp");
+	this->healthBar = Graphics::loadImage("./graphics/healthbar.bmp");
 	//this->screen = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 };
 
@@ -39,8 +44,137 @@ void GameController::init() {
 	SDL_SetWindowTitle(window, this->title);
 
 	//creating a main list of objects
+	this->load();
 }
 
+void GameController::mainMenu() {
+	Graphics::Surface(this->screen, this->mainMenuBackground, 0, 0,nullptr,false);
+
+	for (int i = 0; i < this->buttons.getSize(); i++) {
+		GameObject* button = this->buttons.get(i);
+		
+		if (button->shape->collision(mousePos.x,mousePos.y)) {
+			switch (i) {
+			case 0:
+				this->changeState(GAME);
+				return;
+				break;
+			case 1:
+				this->changeState(LEVEL_MENU);
+				return;
+				break;
+			case 2:
+				this->quit = 1;
+				this->buttons.clear();
+				return;
+				break;
+			};
+		}
+
+	}
+
+	for (int i = 0; i < this->buttons.getSize(); i++) {
+		GameObject* button = this->buttons.get(i);
+		button->draw(this->screen);
+	}
+}
+
+void GameController::levelMenu() {
+	Graphics::Surface(this->screen, this->levelMenuBackground, 0, 0, nullptr, false);
+
+	for (int i = 0; i < this->buttons.getSize(); i++) {
+		GameObject* button = this->buttons.get(i);
+
+		if (button->shape->collision(mousePos.x, mousePos.y)) {
+			switch (i) {
+			case 0:
+				this->changeState(MAIN_MENU);
+				return;
+				break;
+			case 1:
+				this->quit = 1;
+				this->buttons.clear();
+				return;
+				break;
+			default:
+				this->levelNum = i - 1;
+				this->changeState(GAME);
+				return;
+				break;
+			};
+		}
+
+	}
+
+	for (int i = 0; i < this->buttons.getSize(); i++) {
+		GameObject* button = this->buttons.get(i);
+		button->draw(this->screen);
+	}
+}
+
+void GameController::changeState(int x){
+	this->state = x;
+	this->buttons.clear();
+	this->load();
+}
+
+void GameController::loadMainMenu(){
+	//play button	
+	this->buttons.push(new Button("Quick start",new Rectangle(50,550,11*FONT_SIZE,25,Graphics::red),this->charset));
+	this->buttons.push(new Button("Levels",new Rectangle(50,600,6*FONT_SIZE,25,0),this->charset));
+	this->buttons.push(new Button("Quit",new Rectangle(50,650,4*FONT_SIZE,25,0),this->charset));
+}
+
+void GameController::loadLevelMenu() {
+	this->numbers[0] = Graphics::loadImage("./graphics/numbers/1.bmp");
+	this->numbers[1] = Graphics::loadImage("./graphics/numbers/2.bmp");
+	this->numbers[2] = Graphics::loadImage("./graphics/numbers/3.bmp");
+
+	this->buttons.push(new Button("Back", new Rectangle(50, 600, 4 * FONT_SIZE, 25, Graphics::red), this->charset));
+	this->buttons.push(new Button("Quit", new Rectangle(50, 650, 4 * FONT_SIZE, 25, 0), this->charset));
+	this->buttons.push(new Button("", new Rectangle(SCREEN_WIDTH/2 - 100 - 250, SCREEN_HEIGHT/2 - 75, 150, 150, Graphics::red), this->charset,this->numbers[0]));
+	this->buttons.push(new Button("", new Rectangle(SCREEN_WIDTH/2 - 100, SCREEN_HEIGHT/2 - 75, 150, 150, Graphics::red), this->charset,this->numbers[1]));
+	this->buttons.push(new Button("", new Rectangle(SCREEN_WIDTH/2 - 100 + 250, SCREEN_HEIGHT/2 - 75, 150, 150, Graphics::red), this->charset,this->numbers[2]));
+}
+
+void GameController::loadGameState() {
+	this->start();
+}
+
+void GameController::load(){
+	switch (this->state) {
+	case(MAIN_MENU):
+		this->loadMainMenu();
+		break;
+	case(LEVEL_MENU):
+		this->loadLevelMenu();
+		break;
+	case(GAME):
+		this->loadGameState();
+		break;
+	default:
+		this->mainMenu();
+		break;
+	}
+}
+
+void GameController::gameState() {
+	char text[MAX_STRING];
+	this->currentLevel->update(this->camera, this->delta);
+	this->currentLevel->draw(this->camera);
+	this->player->draw(this->screen, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2);
+	this->currentLevel->shoot(delta);
+
+	//static drawing
+	sprintf(text, "Elapsed time: = %.1lf s", this->worldTime);
+	Graphics::String(this->screen, 800, 0, text, this->charset);
+
+	//healthbar
+	Graphics::Rectangle(this->screen, 30, 8, HEALTHBAR_WIDTH, 50, Graphics::gray, Graphics::gray);
+	printf("\n%d\n", this->player->hp);
+	Graphics::Rectangle(this->screen, 30, 10, HEALTHBAR_WIDTH * ((double)this->player->hp/ (double)PLAYER_HP), 49, Graphics::red, Graphics::red);
+	Graphics::Surface(this->screen, this->healthBar, 0, 0,nullptr,false);
+}
 
 void GameController::start() {
 	int playerX = SCREEN_WIDTH / 2;
@@ -53,7 +187,19 @@ void GameController::start() {
 
 	this->player = new Player(this->camera, new Rectangle(playerX, playerY, PLAYER_WIDTH, PLAYER_HEIGHT, 0));
 	this->camera = new Camera(this->player);
-	this->currentLevel = new Level(36, 30, "./levels/0/", "./levels/0/tileset.bmp", this->screen, this->player, this->camera);
+
+	char path[MAX_STRING] = {};
+	sprintf(path,"./levels/%d/",this->levelNum);
+	
+	char tilesetPath[MAX_STRING] = {};
+	sprintf(tilesetPath, "./levels/%d/tileset.bmp", this->levelNum);
+
+	char basePath[MAX_STRING] = {};
+	strcpy(basePath, path);
+
+	Vector2 levelSize = Graphics::countCSV(strcat(basePath,"Base.csv"));
+
+	this->currentLevel = new Level((int)levelSize.x, (int)levelSize.y, path, tilesetPath, this->screen, this->player, this->camera);
 	this->player->setBulletsList(this->currentLevel->getPlayerBullets());
 	this->currentLevel->init();
 }
@@ -65,40 +211,35 @@ void GameController::update() {
 
 	int frameTime = 0;
 	SDL_Rect r;
-	
-	GameObject* actual = nullptr;
-	int czarny = SDL_MapRGB(screen->format, 0x00, 0x00, 0x00);
-	int niebieski = SDL_MapRGB(screen->format, 0x11, 0x11, 0xCC);
-	int zielony = SDL_MapRGB(screen->format, 0x00, 0xFF, 0x00);
-
-	//Level level0(50,50,"./levels/0/","./levels/0/tileset.bmp",this->screen,this->player,this->camera);
-	int czerwony = SDL_MapRGB(screen->format, 0xFF, 0x00, 0x00);
-	char text[MAX_STRING];
-	this->start();
+	//States state;
+	//this->start();
 	while (!this->quit) {
+		this->mousePos.x = -100;
+		this->mousePos.y = -100;
 		this->eventHandler();
 
 		t2 = SDL_GetTicks();
 		this->delta = (t2 - t1) * 0.001;
 		this->worldTime += this->delta;
 		t1 = t2;
-
-		SDL_FillRect(this->screen, NULL, czarny);
+		SDL_FillRect(this->screen, NULL, 0);
 		
-		//this->player->update(0, 0, this->delta);
-		this->currentLevel->update(this->camera,this->delta);
-		this->currentLevel->draw(this->camera);
-		//this->player->draw(this->screen, this->camera->x,this->camera->y);
-		this->player->draw(this->screen, 25 ,25);
-		this->currentLevel->shoot(delta);
+		
+		switch (this->state) {
+		case(MAIN_MENU):
+			this->mainMenu();
+			break;
+		case(LEVEL_MENU):
+			this->levelMenu();
+			break;
+		case(GAME):
+			this->gameState();
+			break;
+		default:
+			this->mainMenu();
+			break;
+		}
 
-		Graphics::Rectangle(screen, *this->player->shape->getX() - 3, *this->player->shape->getY() - 3, 6, 6, czerwony, czerwony);
-
-
-		//static drawing
-		sprintf(text, "Elapsed time: = %.1lf s",this->worldTime);
-		Graphics::String(this->screen, 0, 0, text, this->charset);
-		//Graphics::String(screen, screen->w / 2 - strlen(text) * 8 / 2, 10, text, charset);*/
 
 		SDL_UpdateWindowSurface(this->window);
 
@@ -115,7 +256,8 @@ void GameController::eventHandler() {
 	SDL_Event event;
 
 	while (SDL_PollEvent(&event)) {
-		this->player->controls(event);
+
+		if(this->player != nullptr) this->player->controls(event);
 		switch (event.type) {
 		case SDL_KEYDOWN:
 			if (event.key.keysym.sym == SDLK_ESCAPE) this->quit = 1;
@@ -130,6 +272,13 @@ void GameController::eventHandler() {
 			break;
 		case SDL_QUIT:
 			this->quit = 1;
+			break;
+		case (SDL_MOUSEBUTTONDOWN):
+			int mouseX = 0;
+			int mouseY = 0;
+			SDL_GetMouseState(&mouseX, &mouseY);
+			this->mousePos.x = mouseX;
+			this->mousePos.y = mouseY;
 			break;
 		};
 	};

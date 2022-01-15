@@ -2,6 +2,7 @@
 #include "SDL2-2.0.10/include/SDL.h"
 #include "ColliderShape.h"
 #include "Vector2.h"
+#include "GLOBALS.h"
 
 class GameObject{
 protected:
@@ -11,6 +12,7 @@ protected:
 	Vector2 direction;
 	SDL_Surface* image;
 public:
+	int hp = 0;
 	bool customFlag = 0;
 	ColliderShape* shape;
 
@@ -25,6 +27,8 @@ public:
 	void setSpeed(int speed);
 	void setImage(SDL_Surface* image);
 	Vector2 getDirection();
+
+	bool isDead();
 
 	void horizontalMovement(double delta);
 	void verticalMovement(double delta);

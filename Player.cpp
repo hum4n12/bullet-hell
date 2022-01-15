@@ -6,7 +6,15 @@
 Player::Player(Camera* camera,ColliderShape* shape, SDL_Surface* image):GameObject(shape, image) {
 	this->speed = this->CONST_SPEED;
 	this->camera = camera;
-};
+	this->hp = PLAYER_HP;
+}
+bool Player::getInvicibility(){
+	return this->isInvicible;
+}
+void Player::setInvicibility(){
+	this->isInvicible = true;
+}
+;
 
 void Player::controls(SDL_Event event) {
 	switch (event.type) {
@@ -92,7 +100,6 @@ void Player::controls(SDL_Event event) {
 		int mouseX = 0;
 		int mouseY = 0;
 		SDL_GetMouseState(&mouseX, &mouseY);
-		printf("\n%d", mouseX);
 		this->shoot(mouseX, mouseY);
 		break;
 	}
@@ -107,22 +114,13 @@ void Player::setY(int y) {
 }
 
 void Player::update(int offsetX,int offsetY, double delta) {
-	/*printf("\n %d %d", *this->x, *this->y);*/
-	//normalizing vectors
-	double x = this->direction.x;
-	double y = this->direction.y;
-	double v = sqrt(x * x + y * y);
-	if (v > 0) { 
-		x = x / v;
-		y = y / v;
+	if (this->isInvicible) {
+		this->invicibleTimer += delta;
 	}
-	x = this->speed * x * delta;
-	y = this->speed * y * delta;
-
-	// move x,check if
-
-	//this->camera->update(x, y,this);
-	//printf("\n%d %d", this->camera->originX, this->camera->originY);
+	if (this->invicibleTimer >= INVICIBLE_TIME) {
+		this->invicibleTimer = 0;
+		this->isInvicible = false;
+	}
 }
 
 void Player::shoot(int mouseX, int mouseY){

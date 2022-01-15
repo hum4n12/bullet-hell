@@ -11,6 +11,7 @@ public:
 	GameObject* pop();
 	void remove(int pos);
 	GameObject* get(int pos);
+	void clear();
 	int getSize();
 };
 
