@@ -28,6 +28,7 @@ private:
 	List walls;
 	List enemies;
 	List bullets;
+	List playerBullets;
 	Player* player;
 	Camera* camera;
 	Rectangle* cameraCollider;
@@ -44,5 +45,6 @@ public:
 	void verticalMovementCollision(double delta);
 	void shoot(double delta);
 	void bulletsUpdate(double delta);
+	List* getPlayerBullets();
 };
 

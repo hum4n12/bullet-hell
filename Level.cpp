@@ -115,9 +115,9 @@ void Level::init() {
 						break;
 					default:
 						/*temp = new BulletKin(this->player, &this->bullets, destX, destY);*/
-						//temp = new Shogun(this->player, &this->bullets, destX, destY);
+						temp = new Shogun(this->player, &this->bullets, destX, destY);
 						//temp = new Fuselier(this->player, &this->bullets, destX, destY);
-						temp = new Knight(this->player, &this->bullets, destX, destY);
+						//temp = new Knight(this->player, &this->bullets, destX, destY);
 						break;
 				}
 				Vector2 offset = temp->shape->getOffset();
@@ -332,9 +332,35 @@ void Level::bulletsUpdate(double delta){
 			if (wall->collision(bullet)) {
 				bullet->collisionReact(0,0);
 				this->bullets.remove(i);
+				delete bullet;
+				bullet = nullptr;
 				break;
 			}
 		}
 
+		if (bullet != nullptr) {
+			if (bullet->customFlag == 0) {
+				if (this->player->collision(bullet)) {
+					bullet->collisionReact(0, 0);
+					this->bullets.remove(i);
+					delete bullet;
+					continue;
+				}
+			}
+
+			for (int j = 0; j < this->enemies.getSize(); j++) {
+				GameObject* enemy = this->enemies.get(j);
+				if (bullet->customFlag == 1 && enemy->collision(bullet)) {
+					bullet->collisionReact(0, 0);
+					this->bullets.remove(i);
+					delete bullet;
+					break;
+				}
+			}
+		}
 	}
+}
+
+List* Level::getPlayerBullets(){
+	return &this->bullets;
 }

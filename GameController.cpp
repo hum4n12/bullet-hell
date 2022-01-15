@@ -26,7 +26,7 @@ void GameController::init() {
 
 	// tryb pe³noekranowy / fullscreen mode
 	//	rc = SDL_CreateWindowAndRenderer(0, 0, SDL_WINDOW_FULLSCREEN_DESKTOP, &window, &renderer);
-	int rc = SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, 0, &this->window, &this->renderer);
+	int rc = SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, SDL_RENDERER_PRESENTVSYNC, &this->window, &this->renderer);
 	if (rc != 0) {
 		SDL_Quit();
 		printf("SDL_CreateWindowAndRenderer error: %s\n", SDL_GetError());
@@ -54,6 +54,7 @@ void GameController::start() {
 	this->player = new Player(this->camera, new Rectangle(playerX, playerY, PLAYER_WIDTH, PLAYER_HEIGHT, 0));
 	this->camera = new Camera(this->player);
 	this->currentLevel = new Level(36, 30, "./levels/0/", "./levels/0/tileset.bmp", this->screen, this->player, this->camera);
+	this->player->setBulletsList(this->currentLevel->getPlayerBullets());
 	this->currentLevel->init();
 }
 
