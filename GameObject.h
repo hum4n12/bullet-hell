@@ -14,19 +14,21 @@ protected:
 	Vector2 direction;
 	SDL_Surface* image;
 	int hitValue = 1;
+	Vector2 animationOffset = { 0,0 };
 
 	//animations
 	char runPath[MAX_PATH_SIZE] = { 0 };
 	char attackPath[MAX_PATH_SIZE] = { 0 };
 	char idlePath[MAX_PATH_SIZE] = { 0 };
 
-	Animations* animations = nullptr;
 	SDL_Rect* animationRect = nullptr;
 
 	int currAnimation = RUN;
 	int frame = 1;
 	double animationTimer = 1;
+	bool flip = 0;
 public:
+	Animations* animations = nullptr;
 	int hp = 0;
 	bool customFlag = 0;
 	ColliderShape* shape;
@@ -43,7 +45,7 @@ public:
 	void setImage(SDL_Surface* image);
 	int getHitValue();
 
-	void initAnimations();
+	void initAnimations(Animations* a = nullptr);
 	Vector2 getDirection();
 
 	bool isDead();

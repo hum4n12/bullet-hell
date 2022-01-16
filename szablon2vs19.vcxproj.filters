@@ -67,9 +67,6 @@
     <ClCompile Include="MedKit.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="TShape.cpp">
-      <Filter>Pliki źródłowe</Filter>
-    </ClCompile>
     <ClCompile Include="Zone.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>

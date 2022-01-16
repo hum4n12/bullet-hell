@@ -6,7 +6,7 @@
 #include "List.h"
 #define PLAYER_WIDTH 40
 #define PLAYER_HEIGHT 60
-#define INVICIBLE_TIME 1
+#define INVICIBLE_TIME 0.6
 
 class Player :public GameObject{
 private:

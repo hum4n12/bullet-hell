@@ -10,6 +10,11 @@
 #include "Fuselier.h"
 #include "Knight.h"
 #include "MedKit.h"
+#define BULLET_KIN_ANIMATIONS "./graphics/animations/bullet_kin/"
+#define SHOGUN_ANIMATIONS "./graphics/animations/shogun/"
+#define FUSELIER_ANIMATIONS "./graphics/animations/fuselier/"
+#define KNIGHT_ANIMATIONS "./graphics/animations/knight/"
+#define PLAYER_ANIMATIONS "./graphics/animations/player/"
 #define MEDKIT_CHANCE_DROP 20 //%
 
 Level::Level(int width, int height, const char* filePath,const char* tileSetPath, SDL_Surface* screen,Player* player,Camera* camera){
@@ -75,7 +80,23 @@ bool Level::load() {
 }
 
 void Level::init() {
+	//
+	Animations* bullet_kin = new Animations(Graphics::loadImage(BULLET_KIN_ANIMATIONS"run.bmp"),nullptr,nullptr);
+	bullet_kin->setFlip(Graphics::loadImage(BULLET_KIN_ANIMATIONS"run_flip.bmp"));
+
+	Animations* shogun = new Animations(Graphics::loadImage(SHOGUN_ANIMATIONS"run.bmp"),nullptr,nullptr);
+	shogun->setFlip(Graphics::loadImage(SHOGUN_ANIMATIONS"run_flip.bmp"));
+
+	Animations* fuselier = new Animations(Graphics::loadImage(FUSELIER_ANIMATIONS"run.bmp"),nullptr,nullptr);
+	fuselier->setFlip(Graphics::loadImage(FUSELIER_ANIMATIONS"run_flip.bmp"));
+
+	Animations* knight = new Animations(Graphics::loadImage(KNIGHT_ANIMATIONS"run.bmp"),nullptr,nullptr);
+	knight->setFlip(Graphics::loadImage(KNIGHT_ANIMATIONS"run_flip.bmp"));
+
+
 	this->player->initAnimations();
+	this->player->animations->setFlip(Graphics::loadImage(PLAYER_ANIMATIONS"run_flip.bmp"), Graphics::loadImage(PLAYER_ANIMATIONS"idle_flip.bmp"));
+
 	this->camera->setLevelDimensions(this->width * TILE_SIZE, this->height * TILE_SIZE);
 	char path[MAX_PATH_LENGTH];
 
@@ -123,15 +144,19 @@ void Level::init() {
 					break;
 				case BULLET_KIN:
 					temp = new BulletKin(this->player, &this->bullets, destX, destY);
+					temp->initAnimations(bullet_kin);
 					break;
 				case SHOGUN:
 					temp = new Shogun(this->player, &this->bullets, destX, destY);
+					temp->initAnimations(shogun);
 					break;
 				case FUSELIER:
 					temp = new Fuselier(this->player, &this->bullets, destX, destY);
+					temp->initAnimations(fuselier);
 					break;
 				case KNIGHT:
 					temp = new Knight(this->player, &this->bullets, destX, destY);
+					temp->initAnimations(knight);
 					break;
 				default:
 					temp = new BulletKin(this->player, &this->bullets, destX, destY);

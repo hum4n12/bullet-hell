@@ -18,19 +18,24 @@ int GameObject::getHitValue()
 	return this->hitValue;
 }
 
-void GameObject::initAnimations(){
-	SDL_Surface* run;
-	SDL_Surface* attack = nullptr;
-	SDL_Surface* idle = nullptr;
+void GameObject::initAnimations(Animations* a){
+	if (a == nullptr) {
+		SDL_Surface* run;
+		SDL_Surface* attack = nullptr;
+		SDL_Surface* idle = nullptr;
 
-	//run = Graphics::loadImage("./graphics/animations/player/run.bmp");
-	run = Graphics::loadImage(this->runPath);
-	attack = Graphics::loadImage(this->attackPath);
-	idle = Graphics::loadImage(this->idlePath);
-
-	this->animations = new Animations(run, attack, idle);
+		//run = Graphics::loadImage("./graphics/animations/player/run.bmp");
+		run = Graphics::loadImage(this->runPath);
+		attack = Graphics::loadImage(this->attackPath);
+		idle = Graphics::loadImage(this->idlePath);
+		this->animations = new Animations(run, attack, idle);
+	}
+	else {
+		this->animations = a;
+	}
 	this->animationRect = this->animations->getFrame(RUN, this->frame);
-	this->image = this->animations->run;
+	this->image = this->animations->getAnimation(RUN);
+	this->currAnimation = RUN;
 }
 
 Vector2 GameObject::getDirection(){
@@ -90,6 +95,22 @@ void GameObject::setSpeed(int speed){
 void GameObject::draw(SDL_Surface* surface, int offsetX, int offsetY) {
 	
 	if (this->image != nullptr) {
+		this->shape->draw(surface, offsetX, offsetY);
+		if (this->animations != nullptr) {
+			if (this->flip) {
+				this->image = this->animations->getAnimationFlip(this->currAnimation);
+			}
+			else {
+				this->image = this->animations->getAnimation(this->currAnimation);
+			}
+			offsetX = this->animationRect->w / 2 - this->animationOffset.x * this->direction.x;
+			offsetY = this->animationOffset.y;
+			Graphics::Surface(surface, this->image, *this->x - offsetX, *this->y - offsetY, this->animationRect, false);
+		}
+		else {
+			offsetX = 64;
+			offsetY = 64;
+		}
 		Graphics::Surface(surface, this->image, *this->x - offsetX, *this->y - offsetY, this->animationRect, false);
 	}
 	else {

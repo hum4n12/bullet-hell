@@ -125,6 +125,15 @@ void Player::setY(int y) {
 
 void Player::update(int offsetX,int offsetY, double delta) {
 	this->animationTimer += delta * ANIMATION_SPEED;
+	int mouseX = 0;
+	int mouseY = 0;
+	SDL_GetMouseState(&mouseX, &mouseY);
+	if (*this->x < mouseX) {
+		this->flip = true;
+	}
+	else {
+		this->flip = false;
+	}
 
 	//animations
 	if (this->direction.x == 0 && this->direction.y == 0 && this->currAnimation != IDLE) {
@@ -211,7 +220,8 @@ void Player::draw(SDL_Surface* surface, int offsetX , int offsetY ) {
 	}
 	
 	if (this->image != nullptr) {
-		this->image = this->animations->getAnimation(this->currAnimation);
+		if(this->flip) this->image = this->animations->getAnimationFlip(this->currAnimation);
+		else this->image = this->animations->getAnimation(this->currAnimation);
 		//this->shape->draw(surface, offsetX, offsetY);
 		offsetX = this->animationRect->w / 2 + PLAYER_WIDTH / 4;
 		offsetY = this->animationRect->h/2 - 2;
