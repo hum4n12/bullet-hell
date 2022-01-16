@@ -13,6 +13,8 @@ public:
 	static const Uint32 cyan = 65535;
 	static const Uint32 white = 16777215;
 	static const Uint32 gray = 3158064;
+	static const Uint32 lime = 3329330;
+	static const Uint32 darkRed = 16711680;
 
 	// draw a text txt on surface screen, starting from the point (x, y) charset is a 128x128 bitmap containing character images
 	static void String(SDL_Surface* screen, int x, int y, const char* text, SDL_Surface* charset,int fontSize = FONT_SIZE);
@@ -29,7 +31,9 @@ public:
 	// draw a rectangle of size l by k
 	static void Rectangle(SDL_Surface* screen, int x, int y, int l, int k, Uint32 outlineColor, Uint32 fillColor);
 
-	static void Circle(SDL_Surface* screen, int x, int y, int radius, Uint32 color);
+	static void Circle(SDL_Surface* screen, int x, int y, int radius, Uint32 color, Uint32 colorBorder = 255);
+
+	static void drawHit(SDL_Surface* screen, int x, int y, int size);
 
 	//load image
 	static SDL_Surface* loadImage(const char* path);

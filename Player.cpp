@@ -163,7 +163,7 @@ void Player::update(int offsetX,int offsetY, double delta) {
 }
 
 void Player::shoot(int mouseX, int mouseY){
-	GameObject* bullet = new Bullet(Vector2{(double)mouseX,(double)mouseY}, 900, new Circle(*this->x, *this->y, 15, Graphics::white),nullptr,1);
+	GameObject* bullet = new Bullet(Vector2{(double)mouseX,(double)mouseY}, 900, new Circle(*this->x, *this->y, 15, Graphics::white,Graphics::darkRed),nullptr,1);
 	this->bullets->push(bullet);
 	bullet->update(0, 0, 0); //updating direction
 }
@@ -196,7 +196,7 @@ void Player::updateScore(int x){
 }
 
 void Player::hit(int x){
-	if (this->isInvicible) {
+	if (this->isInvicible && x > 0) {
 		return;
 	}
 	this->updateScore(-1 * x);

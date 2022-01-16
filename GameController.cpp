@@ -145,7 +145,7 @@ void GameController::gameDraw() {
 	Graphics::String(this->screen, 900, 10, text, this->charset);
 	Graphics::Rectangle(this->screen, 30, 8, HEALTHBAR_WIDTH, 50, Graphics::gray, Graphics::gray);
 
-	Graphics::Rectangle(this->screen, 30, 10, HEALTHBAR_WIDTH * ((double)this->player->hp / (double)PLAYER_HP), 49, Graphics::red, Graphics::red);
+	Graphics::Rectangle(this->screen, 30, 10, HEALTHBAR_WIDTH * ((double)this->player->hp / (double)PLAYER_HP), 49, Graphics::darkRed, Graphics::darkRed);
 	Graphics::Surface(this->screen, this->healthBar, 0, 0, nullptr, false);
 
 	Graphics::String(this->screen, SCREEN_WIDTH / 2 - (strlen(scoreText) * 16) - 16, 30, scoreText, this->charset, 32);

@@ -1,6 +1,7 @@
 #include "Graphics.h"
 #include "GameController.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 void Graphics::String(SDL_Surface* screen, int x, int y, const char* text, SDL_Surface* charset,int fontSize){
 	int px, py, c;
@@ -90,13 +91,28 @@ void Graphics::Rectangle(SDL_Surface* screen, int x, int y, int l, int k, Uint32
 		Graphics::Line(screen, x + 1, i, l - 2, 1, 0, fillColor);
 };
 
-void Graphics::Circle(SDL_Surface* screen, int x, int y, int radius, Uint32 color) {
+void Graphics::Circle(SDL_Surface* screen, int x, int y, int radius, Uint32 color, Uint32 colorBorder) {
 	//horizontal
 	for (int i = x - radius; i <= x + radius; i++) {
 		//vertical
 		for (int j = y - radius; j <= y + radius; j++) {
-			if (pow((i - x), 2) + pow(j - y, 2) <= pow(radius, 2)) {
+			double dist = pow((i - x), 2) + pow(j - y, 2);
+			if (dist < pow(radius-6, 2)) {
 				Graphics::Pixel(screen,i,j,color);
+			}
+			else if (dist <= pow(radius, 2)) {
+				Graphics::Pixel(screen, i, j, colorBorder);
+			}
+		}
+	}
+}
+
+void Graphics::drawHit(SDL_Surface* screen, int x, int y, int size){
+	for (int i = x - size; i <= x + size; i++) {
+		for (int j = y - size; j <= y + size; j++) {
+			double dist = pow((i - x), 2) + pow(j - y, 2);
+			if (j % 2 ==  0 && dist <= pow(size,2)) {
+				Graphics::Pixel(screen, i, j, Graphics::darkRed);
 			}
 		}
 	}

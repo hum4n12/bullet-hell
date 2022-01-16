@@ -93,9 +93,10 @@ void GameObject::setSpeed(int speed){
 }
 
 void GameObject::draw(SDL_Surface* surface, int offsetX, int offsetY) {
-	
+
 	if (this->image != nullptr) {
-		this->shape->draw(surface, offsetX, offsetY);
+		if(MODE)
+			this->shape->draw(surface, offsetX, offsetY);
 		if (this->animations != nullptr) {
 			if (this->flip) {
 				this->image = this->animations->getAnimationFlip(this->currAnimation);
@@ -108,14 +109,19 @@ void GameObject::draw(SDL_Surface* surface, int offsetX, int offsetY) {
 			Graphics::Surface(surface, this->image, *this->x - offsetX, *this->y - offsetY, this->animationRect, false);
 		}
 		else {
-			offsetX = 64;
-			offsetY = 64;
+			/*offsetX = 64;
+			offsetY = 64;*/
 		}
 		Graphics::Surface(surface, this->image, *this->x - offsetX, *this->y - offsetY, this->animationRect, false);
 	}
 	else {
 		this->shape->draw(surface,offsetX,offsetY);
 	}
+
+	if (this->drawingHit > 0) {
+		Graphics::drawHit(surface, *this->x, *this->y, this->shape->getSize()*0.7);
+	}
+
 }
 
 void GameObject::horizontalMovement(double delta) {
@@ -144,8 +150,7 @@ void GameObject::verticalMovement(double delta) {
 	*this->y += y;
 }
 
-void GameObject::collisionReact(int x, int y)
-{
+void GameObject::collisionReact(int x, int y){
 }
 
 void GameObject::time(double delta) {

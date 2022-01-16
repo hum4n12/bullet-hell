@@ -15,7 +15,6 @@ protected:
 	SDL_Surface* image;
 	int hitValue = 1;
 	Vector2 animationOffset = { 0,0 };
-
 	//animations
 	char runPath[MAX_PATH_SIZE] = { 0 };
 	char attackPath[MAX_PATH_SIZE] = { 0 };
@@ -28,6 +27,7 @@ protected:
 	double animationTimer = 1;
 	bool flip = 0;
 public:
+	double drawingHit = 0;
 	Animations* animations = nullptr;
 	int hp = 0;
 	bool customFlag = 0;

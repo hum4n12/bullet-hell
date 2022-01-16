@@ -10,6 +10,7 @@
 #include "Fuselier.h"
 #include "Knight.h"
 #include "MedKit.h"
+#define DEFAULT_PATH "./graphics/"
 #define BULLET_KIN_ANIMATIONS "./graphics/animations/bullet_kin/"
 #define SHOGUN_ANIMATIONS "./graphics/animations/shogun/"
 #define FUSELIER_ANIMATIONS "./graphics/animations/fuselier/"
@@ -28,7 +29,7 @@ Level::Level(int width, int height, const char* filePath,const char* tileSetPath
 	this->player = player;
 	this->camera = camera;
 	this->load();
-
+	this->medKitImg = Graphics::loadImage(DEFAULT_PATH"medkit.bmp");
 }
 
 bool Level::load() {
@@ -81,6 +82,7 @@ bool Level::load() {
 
 void Level::init() {
 	//
+
 	Animations* bullet_kin = new Animations(Graphics::loadImage(BULLET_KIN_ANIMATIONS"run.bmp"),nullptr,nullptr);
 	bullet_kin->setFlip(Graphics::loadImage(BULLET_KIN_ANIMATIONS"run_flip.bmp"));
 
@@ -140,7 +142,7 @@ void Level::init() {
 					this->player->setCoords(destX, destY);
 					break;
 				case MED_KIT:
-					temp = new MedKit(this->player, &this->bullets, destX, destY);
+					temp = new MedKit(this->player, &this->bullets, destX, destY,this->medKitImg);
 					break;
 				case BULLET_KIN:
 					temp = new BulletKin(this->player, &this->bullets, destX, destY);
@@ -402,6 +404,7 @@ void Level::bulletsUpdate(double delta){
 				GameObject* enemy = this->enemies.get(j);
 				if (bullet->customFlag == 1 && enemy->collision(bullet)) {
 					enemy->hp--;
+					enemy->drawingHit = 0.7;
 					this->player->updateScore(1);
 					bullet->collisionReact(0, 0);
 					this->bullets.remove(i);
@@ -436,7 +439,7 @@ void Level::checkEnemyDeath() {
 			if (isMedKit == false) {
 				int chance = rand() % 100 + 1;
 				if (chance <= MEDKIT_CHANCE_DROP) {
-					this->enemies.push(new MedKit(this->player, &this->bullets, *go->shape->getX(), *go->shape->getY()));
+					this->enemies.push(new MedKit(this->player, &this->bullets, *go->shape->getX(), *go->shape->getY(), this->medKitImg));
 					medKits++;
 				}
 			}

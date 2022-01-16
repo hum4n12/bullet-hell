@@ -33,6 +33,8 @@ private:
 	Player* player;
 	Camera* camera;
 	Rectangle* cameraCollider;
+
+	SDL_Surface* medKitImg = nullptr;
 	bool load(); //0 if cannot load level info
 	void horizontalEnemyCollision(GameObject* go);
 	void verticalEnemyCollision(GameObject* go);
