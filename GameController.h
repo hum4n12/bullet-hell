@@ -17,9 +17,11 @@ private:
 	int state = 0; //0 -> menu, 1 -> choose of level, 2 -> actual game
 	List buttons;
 	Vector2 mousePos{ 0,0 };
+	char score[MAX_STRING] = { '0' };
 	//main menu
 	SDL_Surface* mainMenuBackground;
 	SDL_Surface* levelMenuBackground;
+	SDL_Surface* deathSurface;
 	
 	int levelNum = 1;
 
@@ -37,19 +39,24 @@ private:
 	double worldTime;
 	Camera* camera;
 
-	void changeState(int x);
 	//methods
+	void changeState(int x);
 	void eventHandler();
+	void gameDraw();
 public:
 	GameController();
 	
 	void mainMenu();
 	void gameState();
 	void levelMenu();
+	void deathMenu();
+	void successMenu();
 
 	void loadMainMenu();
 	void loadLevelMenu();
 	void loadGameState();
+	void loadDeathMenu();
+	void loadSuccessMenu();
 
 	void init();
 	void load();

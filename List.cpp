@@ -98,6 +98,7 @@ GameObject* List::get(int pos) {
 }
 
 void List::clear(){
+    if (this->head == nullptr) return;
     Node* curr = this->head->next;
 
     do {

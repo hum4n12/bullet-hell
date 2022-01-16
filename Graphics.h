@@ -1,6 +1,7 @@
 #pragma once
 #include "./SDL2-2.0.10/include/SDL.h"
 #include "Vector2.h"
+#include "GLOBALS.h"
 class Graphics{
 public:
 	//static const Uint32 red = 16711680;
@@ -14,7 +15,7 @@ public:
 	static const Uint32 gray = 3158064;
 
 	// draw a text txt on surface screen, starting from the point (x, y) charset is a 128x128 bitmap containing character images
-	static void String(SDL_Surface* screen, int x, int y, const char* text, SDL_Surface* charset);
+	static void String(SDL_Surface* screen, int x, int y, const char* text, SDL_Surface* charset,int fontSize = FONT_SIZE);
 
 	// draw a surface sprite on a surface screen in point (x, y) | (x, y) is the center of sprite on screen
 	static void Surface(SDL_Surface* screen, SDL_Surface* sprite, int x, int y, SDL_Rect* srcRect = nullptr,bool centered = true);

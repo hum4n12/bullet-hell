@@ -6,7 +6,7 @@
 #include "List.h"
 #define PLAYER_WIDTH 50
 #define PLAYER_HEIGHT 50
-#define INVICIBLE_TIME 5
+#define INVICIBLE_TIME 1
 
 class Player :public GameObject{
 private:
@@ -15,6 +15,11 @@ private:
 	int const CONST_SPEED = 650;
 	bool isInvicible = false;
 	double invicibleTimer = 0;
+	double attackDelay = 0.4;
+	double attackDelayTimer = 0;
+	
+	unsigned long score = 0;
+	int scoreBonus = 1;
 public:
 	Player(Camera* camera,ColliderShape* shape, SDL_Surface* image = nullptr);
 	bool getInvicibility();
@@ -25,5 +30,8 @@ public:
 	void update(int offsetX,int offsetY, double delta = 0) override;
 	void shoot(int mouseX, int mouseY);
 	void setBulletsList(List* bullets);
+	void updateScore(int x);
+	void hit(int x = 1);
+	unsigned long getScore();
 };
 

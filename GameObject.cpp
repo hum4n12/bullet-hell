@@ -12,6 +12,11 @@ void GameObject::setImage(SDL_Surface* image) {
 	this->image = image;
 }
 
+int GameObject::getHitValue()
+{
+	return this->hitValue;
+}
+
 Vector2 GameObject::getDirection(){
 	return this->direction;
 }

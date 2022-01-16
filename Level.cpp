@@ -9,6 +9,7 @@
 #include "Shogun.h"
 #include "Fuselier.h"
 #include "Knight.h"
+#include "MedKit.h"
 
 Level::Level(int width, int height, const char* filePath,const char* tileSetPath, SDL_Surface* screen,Player* player,Camera* camera){
 	this->width = width;
@@ -24,14 +25,17 @@ Level::Level(int width, int height, const char* filePath,const char* tileSetPath
 }
 
 bool Level::load() {
-	SDL_Surface* image = nullptr;
-	printf("%s", this->tileSetPath);
+	if (this->tileset != nullptr) {
+		SDL_FreeSurface(this->tileset);
+		delete this->tileset;
+	}
+	
 	//Graphics::loadImage(this->tileSetPath, image);
-	image = SDL_LoadBMP(this->tileSetPath);
-	image = SDL_ConvertSurface(image, this->screen->format, 0);
+	this->tileset = SDL_LoadBMP(this->tileSetPath);
+	this->tileset = SDL_ConvertSurface(this->tileset, this->screen->format, 0);
 
-	int columns = image->w / TILE_SIZE;
-	int rows = image->h / TILE_SIZE;
+	int columns = this->tileset->w / TILE_SIZE;
+	int rows = this->tileset->h / TILE_SIZE;
 	this->tilesSize = columns * rows;
 
 	this->tiles = new Tile[this->tilesSize];
@@ -48,7 +52,7 @@ bool Level::load() {
 	for (int r = 0; r < rows; r++) {
 		rect.x = 0;
 		for (int c = 0; c < columns; c++) {
-			temp = new Tile(rect.x, rect.y, this->screen, image);
+			temp = new Tile(rect.x, rect.y, this->screen, this->tileset);
 			this->tiles[i] = *temp;
 			rect.x += TILE_SIZE;
 			i++;
@@ -115,9 +119,11 @@ void Level::init() {
 						break;
 					default:
 						/*temp = new BulletKin(this->player, &this->bullets, destX, destY);*/
-						temp = new Shogun(this->player, &this->bullets, destX, destY);
+						//temp = new Shogun(this->player, &this->bullets, destX, destY);
 						//temp = new Fuselier(this->player, &this->bullets, destX, destY);
 						//temp = new Knight(this->player, &this->bullets, destX, destY);
+						//temp = new Knight(this->player, &this->bullets, destX, destY);
+						temp = new MedKit(this->player, &this->bullets, destX, destY);
 						break;
 				}
 				Vector2 offset = temp->shape->getOffset();
@@ -202,6 +208,7 @@ void Level::horizontalEnemyCollision(GameObject* go) {
 	for (int i = 0; i < this->enemies.getSize(); i++) {
 		GameObject* enemy = this->enemies.get(i);
 		if (go->collision(enemy)) {
+			enemy->collisionReact(0, 0);
 			Vector2 enemyOffset = enemy->shape->getOffset();
 			Vector2 goOffset = go->shape->getOffset();
 			offset = (int)enemyOffset.x + (int)goOffset.x;
@@ -222,6 +229,7 @@ void Level::verticalEnemyCollision(GameObject* go) {
 		if (go->collision(enemy)) {
 			Vector2 enemyOffset = enemy->shape->getOffset();
 			Vector2 goOffset = go->shape->getOffset();
+			enemy->collisionReact(0, 0);
 			offset = (int)enemyOffset.y + (int)goOffset.y;
 			if (enemy->getDirection().y < 0) {
 				enemy->setY(*go->shape->getY() + offset);
@@ -303,6 +311,8 @@ void Level::update(Camera* camera,double delta) {
 	this->verticalMovementCollision(delta);
 	this->player->update(0,0,delta);
 	this->bulletsUpdate(delta);
+	this->checkEnemyDeath();
+	this->enemyPlayerCollision();
 	camera->update();
 	this->player->addCoords(-camera->x, -camera->y);
 	//printf("\n%d", this->bullets.getSize());
@@ -341,10 +351,8 @@ void Level::bulletsUpdate(double delta){
 
 		if (bullet != nullptr) {
 			if (bullet->customFlag == 0) {
-				printf("\n%d", this->player->getInvicibility());
-				if (!this->player->getInvicibility() && this->player->collision(bullet)) {
-					this->player->hp--;
-					this->player->setInvicibility();
+				if (this->player->collision(bullet)) {
+					this->player->hit();
 					bullet->collisionReact(0, 0);
 					this->bullets.remove(i);
 					delete bullet;
@@ -355,6 +363,8 @@ void Level::bulletsUpdate(double delta){
 			for (int j = 0; j < this->enemies.getSize(); j++) {
 				GameObject* enemy = this->enemies.get(j);
 				if (bullet->customFlag == 1 && enemy->collision(bullet)) {
+					enemy->hp--;
+					this->player->updateScore(1);
 					bullet->collisionReact(0, 0);
 					this->bullets.remove(i);
 					delete bullet;
@@ -363,6 +373,33 @@ void Level::bulletsUpdate(double delta){
 			}
 		}
 	}
+}
+
+void Level::enemyPlayerCollision() {
+	for (int i = 0; i < this->enemies.getSize(); i++) {
+		GameObject* go = this->enemies.get(i);
+		if (go->collision(this->player)) {
+			go->collisionReact(0, 0);
+			this->player->hit(go->getHitValue());
+		}
+	}
+}
+
+void Level::checkEnemyDeath() {
+	for (int i = this->enemies.getSize()-1; i >= 0; i--) {
+		GameObject* go = this->enemies.get(i);
+		if (go->isDead()) {
+			this->enemies.remove(i);
+			delete go;
+		}
+	}
+	if (this->enemies.getSize() == 0) {
+		this->finished = 1;
+	}
+}
+
+bool Level::isFinished(){
+	return this->finished;
 }
 
 List* Level::getPlayerBullets(){

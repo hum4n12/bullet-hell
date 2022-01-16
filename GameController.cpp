@@ -3,6 +3,7 @@
 #include "States.h"
 #include "Button.h"
 #define HEALTHBAR_WIDTH 313
+#define LEVELS_NUMBER 3
 
 GameController::GameController() {
 	this->title = "Explore the Gungeon";
@@ -19,6 +20,7 @@ GameController::GameController() {
 	this->mainMenuBackground = Graphics::loadImage("./graphics/main_menu.bmp");
 	this->levelMenuBackground = Graphics::loadImage("./graphics/menu.bmp");
 	this->healthBar = Graphics::loadImage("./graphics/healthbar.bmp");
+	this->deathSurface = nullptr;
 	//this->screen = SDL_CreateRGBSurface(0, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0x00FF0000, 0x0000FF00, 0x000000FF, 0xFF000000);
 };
 
@@ -42,14 +44,15 @@ void GameController::init() {
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
 	SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
 	SDL_SetWindowTitle(window, this->title);
-
+	//this->deathSurface = SDL_CreateRGBSurface(SDL_SWSURFACE, SCREEN_WIDTH/2, SCREEN_HEIGHT/2, 32, this->screen->format->Rmask, this->screen->format->Gmask, this->screen->format->Bmask, this->screen->format->Amask);
+	this->deathSurface = SDL_CreateRGBSurface(SDL_SWSURFACE, SCREEN_WIDTH, SCREEN_HEIGHT, 32, 0,0, 0,0);
+	SDL_SetSurfaceBlendMode(this->deathSurface, SDL_BLENDMODE_BLEND);
 	//creating a main list of objects
 	this->load();
 }
 
 void GameController::mainMenu() {
 	Graphics::Surface(this->screen, this->mainMenuBackground, 0, 0,nullptr,false);
-
 	for (int i = 0; i < this->buttons.getSize(); i++) {
 		GameObject* button = this->buttons.get(i);
 		
@@ -112,6 +115,40 @@ void GameController::levelMenu() {
 	}
 }
 
+void GameController::gameState() {
+	this->currentLevel->update(this->camera, this->delta);
+	this->currentLevel->shoot(delta);
+	this->gameDraw();
+	this->worldTime += this->delta;
+	
+	if (this->currentLevel->isFinished()) {
+		this->changeState(SUCCESS);
+		return;
+	}
+
+	if (this->player->isDead()) {
+		this->changeState(DEATH_MENU);
+		return;
+	}
+}
+
+void GameController::gameDraw() {
+	char text[MAX_STRING];
+	itoa(this->player->getScore(),this->score,10);
+	this->currentLevel->draw(this->camera);
+	this->player->draw(this->screen, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2);
+	//healthbar
+
+	sprintf(text, "Elapsed time: = %.1lf s", this->worldTime);
+	Graphics::String(this->screen, 900, 10, text, this->charset);
+	Graphics::Rectangle(this->screen, 30, 8, HEALTHBAR_WIDTH, 50, Graphics::gray, Graphics::gray);
+
+	Graphics::Rectangle(this->screen, 30, 10, HEALTHBAR_WIDTH * ((double)this->player->hp / (double)PLAYER_HP), 49, Graphics::red, Graphics::red);
+	Graphics::Surface(this->screen, this->healthBar, 0, 0, nullptr, false);
+
+	Graphics::String(this->screen, SCREEN_WIDTH / 2 - (strlen(this->score) * 16) - 16, 50, this->score, this->charset, 32);
+}
+
 void GameController::changeState(int x){
 	this->state = x;
 	this->buttons.clear();
@@ -141,6 +178,100 @@ void GameController::loadGameState() {
 	this->start();
 }
 
+void GameController::deathMenu() {
+	this->gameDraw();
+	SDL_SetSurfaceAlphaMod(this->deathSurface, 128);
+	Graphics::Surface(this->screen, this->deathSurface, 0, 0, nullptr, false);
+	Graphics::String(this->screen, SCREEN_WIDTH/4, 50, "Game Over", this->charset,64);
+
+	for (int i = 0; i < this->buttons.getSize(); i++) {
+		GameObject* button = this->buttons.get(i);
+
+		if (button->shape->collision(mousePos.x, mousePos.y)) {
+			switch (i) {
+			case 0:
+				this->changeState(GAME);
+				return;
+				break;
+			case 1:
+				this->changeState(MAIN_MENU);
+				return;
+				break;
+			default:
+				this->changeState(MAIN_MENU);
+				return;
+				break;
+			};
+		}
+
+	}
+
+	for (int i = 0; i < this->buttons.getSize(); i++) {
+		GameObject* button = this->buttons.get(i);
+		button->draw(this->screen);
+	}
+}
+
+void GameController::successMenu(){
+	this->gameDraw();
+	SDL_SetSurfaceAlphaMod(this->deathSurface, 128);
+	Graphics::Surface(this->screen, this->deathSurface, 0, 0, nullptr, false);
+	Graphics::String(this->screen, SCREEN_WIDTH / 2 - 15*32, 50, "Level completed", this->charset, 64);
+	Graphics::String(this->screen, SCREEN_WIDTH / 2 - (strlen(this->score)*16)-16, 150, this->score, this->charset, 32);
+
+	for (int i = 0; i < this->buttons.getSize(); i++) {
+		if (this->levelNum == LEVELS_NUMBER && i == 0) continue;
+		GameObject* button = this->buttons.get(i);
+
+		if (button->shape->collision(mousePos.x, mousePos.y)) {
+			switch (i) {
+			case 0:
+				this->levelNum++;
+				this->changeState(GAME);
+				return;
+				break;
+			case 1:
+				this->changeState(MAIN_MENU);
+				return;
+				break;
+			case 2:
+				//scores
+				this->changeState(MAIN_MENU);
+				return;
+				break;
+			default:
+				this->changeState(MAIN_MENU);
+				return;
+				break;
+			};
+		}
+
+	}
+
+	for (int i = 0; i < this->buttons.getSize(); i++) {
+		GameObject* button = this->buttons.get(i);
+		if (this->levelNum == LEVELS_NUMBER && i == 0) continue;
+		button->draw(this->screen);
+	}
+}
+
+void GameController::loadDeathMenu(){
+	this->camera->x = 0;
+	this->camera->y = 0;
+	this->buttons.push(new Button("Try again", new Rectangle(SCREEN_WIDTH/2-160, SCREEN_HEIGHT/2, 10 * 32, 25, Graphics::red), this->charset,nullptr,32));
+	this->buttons.push(new Button("Back to menu", new Rectangle(SCREEN_WIDTH / 2-200, SCREEN_HEIGHT / 2+100, 12 * 32, 25, Graphics::red), this->charset, nullptr, 32));
+}
+
+void GameController::loadSuccessMenu(){
+	this->camera->x = 0;
+	this->camera->y = 0;
+	itoa(this->player->getScore(),this->score,10);
+
+	this->buttons.push(new Button("Next level", new Rectangle(SCREEN_WIDTH/2-160, SCREEN_HEIGHT/2, 10 * 32, 25, Graphics::red), this->charset,nullptr,32));
+	this->buttons.push(new Button("Back to menu", new Rectangle(SCREEN_WIDTH / 2-200, SCREEN_HEIGHT / 2+100, 12 * 32, 25, Graphics::red), this->charset, nullptr, 32));
+	this->buttons.push(new Button("Save Score", new Rectangle(SCREEN_WIDTH / 2-170, SCREEN_HEIGHT / 2+200, 12 * 32, 25, Graphics::red), this->charset, nullptr, 32));
+}
+
 void GameController::load(){
 	switch (this->state) {
 	case(MAIN_MENU):
@@ -152,28 +283,16 @@ void GameController::load(){
 	case(GAME):
 		this->loadGameState();
 		break;
+	case(DEATH_MENU):
+		this->loadDeathMenu();
+		break;
+	case(SUCCESS):
+		this->loadSuccessMenu();
+		break;
 	default:
 		this->mainMenu();
 		break;
 	}
-}
-
-void GameController::gameState() {
-	char text[MAX_STRING];
-	this->currentLevel->update(this->camera, this->delta);
-	this->currentLevel->draw(this->camera);
-	this->player->draw(this->screen, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2);
-	this->currentLevel->shoot(delta);
-
-	//static drawing
-	sprintf(text, "Elapsed time: = %.1lf s", this->worldTime);
-	Graphics::String(this->screen, 800, 0, text, this->charset);
-
-	//healthbar
-	Graphics::Rectangle(this->screen, 30, 8, HEALTHBAR_WIDTH, 50, Graphics::gray, Graphics::gray);
-	printf("\n%d\n", this->player->hp);
-	Graphics::Rectangle(this->screen, 30, 10, HEALTHBAR_WIDTH * ((double)this->player->hp/ (double)PLAYER_HP), 49, Graphics::red, Graphics::red);
-	Graphics::Surface(this->screen, this->healthBar, 0, 0,nullptr,false);
 }
 
 void GameController::start() {
@@ -220,10 +339,8 @@ void GameController::update() {
 
 		t2 = SDL_GetTicks();
 		this->delta = (t2 - t1) * 0.001;
-		this->worldTime += this->delta;
 		t1 = t2;
 		SDL_FillRect(this->screen, NULL, 0);
-		
 		
 		switch (this->state) {
 		case(MAIN_MENU):
@@ -234,6 +351,12 @@ void GameController::update() {
 			break;
 		case(GAME):
 			this->gameState();
+			break;
+		case(DEATH_MENU):
+			this->deathMenu();
+			break;
+		case(SUCCESS):
+			this->successMenu();
 			break;
 		default:
 			this->mainMenu();

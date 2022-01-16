@@ -2,11 +2,13 @@
 #include "Bullet.h"
 #include "Circle.h"
 #include <stdio.h>
+#define MAX_SCORE 999999999
+#define MIN_SCORE 0
 
 Player::Player(Camera* camera,ColliderShape* shape, SDL_Surface* image):GameObject(shape, image) {
 	this->speed = this->CONST_SPEED;
 	this->camera = camera;
-	this->hp = PLAYER_HP;
+	this->hp = PLAYER_HP-2;
 }
 bool Player::getInvicibility(){
 	return this->isInvicible;
@@ -100,7 +102,10 @@ void Player::controls(SDL_Event event) {
 		int mouseX = 0;
 		int mouseY = 0;
 		SDL_GetMouseState(&mouseX, &mouseY);
-		this->shoot(mouseX, mouseY);
+		if (this->attackDelayTimer >= this->attackDelay) {
+			this->shoot(mouseX, mouseY);
+			this->attackDelayTimer = 0;
+		}
 		break;
 	}
 }
@@ -121,6 +126,7 @@ void Player::update(int offsetX,int offsetY, double delta) {
 		this->invicibleTimer = 0;
 		this->isInvicible = false;
 	}
+	this->attackDelayTimer += delta;
 }
 
 void Player::shoot(int mouseX, int mouseY){
@@ -131,4 +137,40 @@ void Player::shoot(int mouseX, int mouseY){
 
 void Player::setBulletsList(List* bullets) {
 	this->bullets = bullets;
+}
+
+void Player::updateScore(int x){
+	if (x < 0) {
+		this->scoreBonus = 1;
+		this->score -= this->score * 0.2;
+		if (this->score < MIN_SCORE)
+			this->score = MIN_SCORE;
+	}
+	else {
+		if (this->score < MAX_SCORE) {
+			if (this->score == MIN_SCORE) {
+				this->score = 1;
+			}
+			else {
+				this->score += scoreBonus;
+			}
+			this->scoreBonus+=1;
+		}
+		else {
+			this->score = MAX_SCORE;
+		}
+	}
+}
+
+void Player::hit(int x){
+	if (this->isInvicible) {
+		return;
+	}
+	this->updateScore(-1 * x);
+	this->hp -= x;
+	this->isInvicible = true;
+}
+
+unsigned long Player::getScore() {
+	return this->score;
 }

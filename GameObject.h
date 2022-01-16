@@ -11,6 +11,7 @@ protected:
 	int speed;
 	Vector2 direction;
 	SDL_Surface* image;
+	int hitValue = 1;
 public:
 	int hp = 0;
 	bool customFlag = 0;
@@ -26,6 +27,8 @@ public:
 	void addY(int y);
 	void setSpeed(int speed);
 	void setImage(SDL_Surface* image);
+	int getHitValue();
+
 	Vector2 getDirection();
 
 	bool isDead();

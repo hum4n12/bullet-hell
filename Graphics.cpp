@@ -2,15 +2,23 @@
 #include "GameController.h"
 #include <stdio.h>
 
-void Graphics::String(SDL_Surface* screen, int x, int y, const char* text, SDL_Surface* charset){
-	int fontSize = FONT_SIZE;
+void Graphics::String(SDL_Surface* screen, int x, int y, const char* text, SDL_Surface* charset,int fontSize){
 	int px, py, c;
 	SDL_Rect s, d;
+	//SDL_Surface* a = SDL_CreateRGBSurface(SDL_SWSURFACE, 512, 512, charset->format->BitsPerPixel, charset->format->Rmask, charset->format->Gmask, charset->format->Bmask, charset->format->Amask);
+	SDL_Surface* a = SDL_CreateRGBSurface(SDL_SWSURFACE, 256, 256, 32,0,0,0,0);
+	SDL_Surface* b = SDL_CreateRGBSurface(SDL_SWSURFACE, fontSize*256/FONT_SIZE, fontSize * 256 / FONT_SIZE, 32,0,0,0,0);
+
+	SDL_SetSurfaceBlendMode(a, SDL_BLENDMODE_NONE);
+	SDL_SetSurfaceBlendMode(charset, SDL_BLENDMODE_NONE);
+	SDL_BlitScaled(charset, NULL, a, NULL);
+	SDL_BlitScaled(a, NULL, b, NULL);
+	printf("%s",SDL_GetError());
+
 	s.w = fontSize;
 	s.h = fontSize;
 	d.w = fontSize;
 	d.h = fontSize;
-
 	SDL_SetColorKey(charset, 1, 0);
 	while (*text) {
 		c = *text & 255;
@@ -20,11 +28,12 @@ void Graphics::String(SDL_Surface* screen, int x, int y, const char* text, SDL_S
 		s.y = py;
 		d.x = x;
 		d.y = y;
-		SDL_BlitSurface(charset, &s, screen, &d);
+		SDL_BlitSurface(b, &s, screen, &d);
 		x += fontSize;
 		text++;
 	};
-
+	SDL_FreeSurface(a);
+	SDL_FreeSurface(b);
 };
 
 void Graphics::Surface(SDL_Surface* screen, SDL_Surface* sprite, int x, int y, SDL_Rect* srcRect,bool centered) {
@@ -37,6 +46,10 @@ void Graphics::Surface(SDL_Surface* screen, SDL_Surface* sprite, int x, int y, S
 		dest.x = x;
 		dest.y = y;
 	}
+	/*if (sprite == nullptr) {
+		printf("\nerror");
+		return;
+	}*/
 	dest.w = sprite->w;
 	dest.h = sprite->h;
 	if(srcRect == nullptr)
