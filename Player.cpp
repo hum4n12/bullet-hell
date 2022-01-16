@@ -2,13 +2,18 @@
 #include "Bullet.h"
 #include "Circle.h"
 #include <stdio.h>
+#include <string.h>
 #define MAX_SCORE 999999999
 #define MIN_SCORE 0
+#define PLAYER_ANIMATIONS "./graphics/animations/player/"
 
 Player::Player(Camera* camera,ColliderShape* shape, SDL_Surface* image):GameObject(shape, image) {
 	this->speed = this->CONST_SPEED;
 	this->camera = camera;
 	this->hp = PLAYER_HP;
+	strcat(this->runPath, PLAYER_ANIMATIONS"run.bmp");
+	strcat(this->attackPath, PLAYER_ANIMATIONS"attack.bmp");
+	strcat(this->idlePath, PLAYER_ANIMATIONS"idle.bmp");
 }
 bool Player::getInvicibility(){
 	return this->isInvicible;
@@ -16,7 +21,7 @@ bool Player::getInvicibility(){
 void Player::setInvicibility(){
 	this->isInvicible = true;
 }
-;
+
 
 void Player::controls(SDL_Event event) {
 	switch (event.type) {
@@ -119,6 +124,25 @@ void Player::setY(int y) {
 }
 
 void Player::update(int offsetX,int offsetY, double delta) {
+	this->animationTimer += delta * ANIMATION_SPEED;
+
+	//animations
+	if (this->direction.x == 0 && this->direction.y == 0 && this->currAnimation != IDLE) {
+		this->currAnimation = IDLE;
+		this->animationTimer = 1;
+	}
+	else if ((this->direction.x != 0 || this->direction.y != 0 )&& this->currAnimation != RUN) {
+		this->currAnimation = RUN;
+		this->animationTimer = 1;
+	}
+
+	if (this->animationTimer >= this->animations->getSize(this->currAnimation)+1) {
+		this->animationTimer = 1;
+	}
+
+	this->frame = (int)this->animationTimer;
+	this->animationRect = this->animations->getFrame(this->currAnimation, this->frame);
+
 	if (this->isInvicible) {
 		this->invicibleTimer += delta;
 	}
@@ -186,9 +210,13 @@ void Player::draw(SDL_Surface* surface, int offsetX , int offsetY ) {
 		this->drawingInvicible = 0;
 	}
 	
-	
 	if (this->image != nullptr) {
-		Graphics::Surface(surface, this->image, *this->x - offsetX, *this->y - offsetY);
+		this->image = this->animations->getAnimation(this->currAnimation);
+		//this->shape->draw(surface, offsetX, offsetY);
+		offsetX = this->animationRect->w / 2 + PLAYER_WIDTH / 4;
+		offsetY = this->animationRect->h/2 - 2;
+		Graphics::Surface(surface, this->image, *this->x - offsetX, *this->y - offsetY,this->animationRect,false);
+		//Graphics::Surface(surface, this->image, *this->x - offsetX, *this->y - offsetY);
 	}
 	else {
 		this->shape->draw(surface, offsetX, offsetY);

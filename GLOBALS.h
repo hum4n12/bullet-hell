@@ -9,5 +9,7 @@
 #define PLAYER_HP 10
 #define BULLET_SIZE 15
 #define BULLET_SPEED 400
+#define MODE 1 //2 -> shows shapes
+#define ANIMATION_SPEED 10
 
 #endif // !GLOBALS_H

@@ -13,7 +13,6 @@ void Graphics::String(SDL_Surface* screen, int x, int y, const char* text, SDL_S
 	SDL_SetSurfaceBlendMode(charset, SDL_BLENDMODE_NONE);
 	SDL_BlitScaled(charset, NULL, a, NULL);
 	SDL_BlitScaled(a, NULL, b, NULL);
-	printf("%s",SDL_GetError());
 
 	s.w = fontSize;
 	s.h = fontSize;
@@ -50,8 +49,14 @@ void Graphics::Surface(SDL_Surface* screen, SDL_Surface* sprite, int x, int y, S
 		printf("\nerror");
 		return;
 	}*/
-	dest.w = sprite->w;
-	dest.h = sprite->h;
+	if (srcRect == nullptr) {
+		dest.w = sprite->w;
+		dest.h = sprite->h;
+	}
+	else {
+		dest.w = srcRect->w;
+		dest.h = srcRect->h;
+	}
 	if(srcRect == nullptr)
 		SDL_BlitSurface(sprite, NULL, screen, &dest);
 	else

@@ -1,5 +1,6 @@
 #include "GameObject.h"
-
+#include "AnimationsList.h"
+#include <stdio.h>
 GameObject::GameObject(ColliderShape* shape, SDL_Surface* image) {
 	this->x = shape->getX();
 	this->y = shape->getY();
@@ -17,8 +18,19 @@ int GameObject::getHitValue()
 	return this->hitValue;
 }
 
-void GameObject::initAnimations(SDL_Surface* run, SDL_Surface* attack, SDL_Surface* idle){
+void GameObject::initAnimations(){
+	SDL_Surface* run;
+	SDL_Surface* attack = nullptr;
+	SDL_Surface* idle = nullptr;
+
+	//run = Graphics::loadImage("./graphics/animations/player/run.bmp");
+	run = Graphics::loadImage(this->runPath);
+	attack = Graphics::loadImage(this->attackPath);
+	idle = Graphics::loadImage(this->idlePath);
+
 	this->animations = new Animations(run, attack, idle);
+	this->animationRect = this->animations->getFrame(RUN, this->frame);
+	this->image = this->animations->run;
 }
 
 Vector2 GameObject::getDirection(){
@@ -78,7 +90,7 @@ void GameObject::setSpeed(int speed){
 void GameObject::draw(SDL_Surface* surface, int offsetX, int offsetY) {
 	
 	if (this->image != nullptr) {
-		Graphics::Surface(surface, this->image, *this->x - offsetX, *this->y - offsetY);
+		Graphics::Surface(surface, this->image, *this->x - offsetX, *this->y - offsetY, this->animationRect, false);
 	}
 	else {
 		this->shape->draw(surface,offsetX,offsetY);

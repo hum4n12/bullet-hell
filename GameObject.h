@@ -4,6 +4,7 @@
 #include "Vector2.h"
 #include "GLOBALS.h"
 #include "Animations.h"
+#define MAX_PATH_SIZE 64
 
 class GameObject{
 protected:
@@ -15,8 +16,16 @@ protected:
 	int hitValue = 1;
 
 	//animations
+	char runPath[MAX_PATH_SIZE] = { 0 };
+	char attackPath[MAX_PATH_SIZE] = { 0 };
+	char idlePath[MAX_PATH_SIZE] = { 0 };
+
 	Animations* animations = nullptr;
-	double animationTimer = 0;
+	SDL_Rect* animationRect = nullptr;
+
+	int currAnimation = RUN;
+	int frame = 1;
+	double animationTimer = 1;
 public:
 	int hp = 0;
 	bool customFlag = 0;
@@ -34,7 +43,7 @@ public:
 	void setImage(SDL_Surface* image);
 	int getHitValue();
 
-	void initAnimations(SDL_Surface* run, SDL_Surface* attack, SDL_Surface* idle = nullptr);
+	void initAnimations();
 	Vector2 getDirection();
 
 	bool isDead();

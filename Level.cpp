@@ -23,6 +23,7 @@ Level::Level(int width, int height, const char* filePath,const char* tileSetPath
 	this->player = player;
 	this->camera = camera;
 	this->load();
+
 }
 
 bool Level::load() {
@@ -74,6 +75,7 @@ bool Level::load() {
 }
 
 void Level::init() {
+	this->player->initAnimations();
 	this->camera->setLevelDimensions(this->width * TILE_SIZE, this->height * TILE_SIZE);
 	char path[MAX_PATH_LENGTH];
 

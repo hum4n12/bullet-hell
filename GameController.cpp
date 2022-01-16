@@ -382,7 +382,7 @@ void GameController::eventHandler() {
 
 	while (SDL_PollEvent(&event)) {
 
-		if(this->player != nullptr) this->player->controls(event);
+		if(this->player != nullptr && this->state == GAME) this->player->controls(event);
 		switch (event.type) {
 		case SDL_KEYDOWN:
 			if (event.key.keysym.sym == SDLK_ESCAPE) this->quit = 1;

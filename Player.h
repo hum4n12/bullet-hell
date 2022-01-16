@@ -4,8 +4,8 @@
 #include "Camera.h"
 #include "Rectangle.h"
 #include "List.h"
-#define PLAYER_WIDTH 50
-#define PLAYER_HEIGHT 50
+#define PLAYER_WIDTH 40
+#define PLAYER_HEIGHT 60
 #define INVICIBLE_TIME 1
 
 class Player :public GameObject{
