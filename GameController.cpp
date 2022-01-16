@@ -134,19 +134,21 @@ void GameController::gameState() {
 
 void GameController::gameDraw() {
 	char text[MAX_STRING];
-	itoa(this->player->getScore(),this->score,10);
+	char scoreText[MAX_STRING] = "Score: ";
+	strcat(scoreText, itoa(this->player->getScore(), this->score, 10));
 	this->currentLevel->draw(this->camera);
 	this->player->draw(this->screen, PLAYER_WIDTH / 2, PLAYER_HEIGHT / 2);
 	//healthbar
 
 	sprintf(text, "Elapsed time: = %.1lf s", this->worldTime);
+
 	Graphics::String(this->screen, 900, 10, text, this->charset);
 	Graphics::Rectangle(this->screen, 30, 8, HEALTHBAR_WIDTH, 50, Graphics::gray, Graphics::gray);
 
 	Graphics::Rectangle(this->screen, 30, 10, HEALTHBAR_WIDTH * ((double)this->player->hp / (double)PLAYER_HP), 49, Graphics::red, Graphics::red);
 	Graphics::Surface(this->screen, this->healthBar, 0, 0, nullptr, false);
 
-	Graphics::String(this->screen, SCREEN_WIDTH / 2 - (strlen(this->score) * 16) - 16, 50, this->score, this->charset, 32);
+	Graphics::String(this->screen, SCREEN_WIDTH / 2 - (strlen(scoreText) * 16) - 16, 30, scoreText, this->charset, 32);
 }
 
 void GameController::changeState(int x){

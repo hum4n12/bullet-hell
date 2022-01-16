@@ -49,14 +49,31 @@
     <ClCompile Include="BulletKin.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="Shogun.cpp" />
-    <ClCompile Include="Fuselier.cpp" />
-    <ClCompile Include="ExplosiveBullet.cpp" />
-    <ClCompile Include="Knight.cpp" />
-    <ClCompile Include="TShape.cpp" />
-    <ClCompile Include="Zone.cpp" />
-    <ClCompile Include="Button.cpp" />
-    <ClCompile Include="MedKit.cpp" />
+    <ClCompile Include="Button.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="ExplosiveBullet.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Knight.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Fuselier.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Shogun.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="MedKit.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="TShape.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Zone.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Animations.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Pliki zasobów">
@@ -124,16 +141,36 @@
     <ClInclude Include="BulletKin.h">
       <Filter>Pliki zasobów</Filter>
     </ClInclude>
-    <ClInclude Include="Shogun.h" />
-    <ClInclude Include="Fuselier.h" />
-    <ClInclude Include="ExplosiveBullet.h" />
-    <ClInclude Include="Knight.h" />
-    <ClInclude Include="TShape.h" />
-    <ClInclude Include="Zone.h" />
     <ClInclude Include="States.h">
       <Filter>Pliki zasobów</Filter>
     </ClInclude>
-    <ClInclude Include="Button.h" />
-    <ClInclude Include="MedKit.h" />
+    <ClInclude Include="Button.h">
+      <Filter>Pliki zasobów</Filter>
+    </ClInclude>
+    <ClInclude Include="ExplosiveBullet.h">
+      <Filter>Pliki zasobów</Filter>
+    </ClInclude>
+    <ClInclude Include="Fuselier.h">
+      <Filter>Pliki zasobów</Filter>
+    </ClInclude>
+    <ClInclude Include="Knight.h">
+      <Filter>Pliki zasobów</Filter>
+    </ClInclude>
+    <ClInclude Include="MedKit.h">
+      <Filter>Pliki zasobów</Filter>
+    </ClInclude>
+    <ClInclude Include="Shogun.h">
+      <Filter>Pliki zasobów</Filter>
+    </ClInclude>
+    <ClInclude Include="TShape.h">
+      <Filter>Pliki zasobów</Filter>
+    </ClInclude>
+    <ClInclude Include="Zone.h">
+      <Filter>Pliki zasobów</Filter>
+    </ClInclude>
+    <ClInclude Include="Animations.h" />
+    <ClInclude Include="AnimationsList.h">
+      <Filter>Pliki zasobów</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -17,7 +17,8 @@ private:
 	double invicibleTimer = 0;
 	double attackDelay = 0.4;
 	double attackDelayTimer = 0;
-	
+	int drawingInvicible = 0;
+
 	unsigned long score = 0;
 	int scoreBonus = 1;
 public:
@@ -33,5 +34,6 @@ public:
 	void updateScore(int x);
 	void hit(int x = 1);
 	unsigned long getScore();
+	virtual void draw(SDL_Surface* screen, int offsetX = 0, int offsetY = 0) override;
 };
 

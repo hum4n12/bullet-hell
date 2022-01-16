@@ -3,6 +3,7 @@
 #include "ColliderShape.h"
 #include "Vector2.h"
 #include "GLOBALS.h"
+#include "Animations.h"
 
 class GameObject{
 protected:
@@ -12,6 +13,10 @@ protected:
 	Vector2 direction;
 	SDL_Surface* image;
 	int hitValue = 1;
+
+	//animations
+	Animations* animations = nullptr;
+	double animationTimer = 0;
 public:
 	int hp = 0;
 	bool customFlag = 0;
@@ -29,6 +34,7 @@ public:
 	void setImage(SDL_Surface* image);
 	int getHitValue();
 
+	void initAnimations(SDL_Surface* run, SDL_Surface* attack, SDL_Surface* idle = nullptr);
 	Vector2 getDirection();
 
 	bool isDead();

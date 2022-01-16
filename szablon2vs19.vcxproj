@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Animations.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="BulletKin.cpp" />
     <ClCompile Include="Button.cpp" />
@@ -45,6 +46,8 @@
     <ClCompile Include="Zone.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Animations.h" />
+    <ClInclude Include="AnimationsList.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="BulletKin.h" />
     <ClInclude Include="Button.h" />

@@ -8,7 +8,7 @@
 Player::Player(Camera* camera,ColliderShape* shape, SDL_Surface* image):GameObject(shape, image) {
 	this->speed = this->CONST_SPEED;
 	this->camera = camera;
-	this->hp = PLAYER_HP-2;
+	this->hp = PLAYER_HP;
 }
 bool Player::getInvicibility(){
 	return this->isInvicible;
@@ -173,4 +173,24 @@ void Player::hit(int x){
 
 unsigned long Player::getScore() {
 	return this->score;
+}
+
+void Player::draw(SDL_Surface* surface, int offsetX , int offsetY ) {
+	if (this->isInvicible) {
+		this->drawingInvicible++;
+		if (drawingInvicible % 4 == 0) {
+			return;
+		}
+	}
+	else {
+		this->drawingInvicible = 0;
+	}
+	
+	
+	if (this->image != nullptr) {
+		Graphics::Surface(surface, this->image, *this->x - offsetX, *this->y - offsetY);
+	}
+	else {
+		this->shape->draw(surface, offsetX, offsetY);
+	}
 }

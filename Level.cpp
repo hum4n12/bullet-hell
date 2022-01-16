@@ -10,6 +10,7 @@
 #include "Fuselier.h"
 #include "Knight.h"
 #include "MedKit.h"
+#define MEDKIT_CHANCE_DROP 20 //%
 
 Level::Level(int width, int height, const char* filePath,const char* tileSetPath, SDL_Surface* screen,Player* player,Camera* camera){
 	this->width = width;
@@ -112,23 +113,33 @@ void Level::init() {
 				EnemiesList e;
 				GameObject* temp = nullptr;
 				switch (enemy) {
-					case BULLET_KIN:
-						//temp = new Fuselier(this->player,&this->bullets,destX,destY);
-						//temp = new Shogun(this->player, &this->bullets, destX, destY);
-						temp = new Knight(this->player, &this->bullets, destX, destY);
-						break;
-					default:
-						/*temp = new BulletKin(this->player, &this->bullets, destX, destY);*/
-						//temp = new Shogun(this->player, &this->bullets, destX, destY);
-						//temp = new Fuselier(this->player, &this->bullets, destX, destY);
-						//temp = new Knight(this->player, &this->bullets, destX, destY);
-						//temp = new Knight(this->player, &this->bullets, destX, destY);
-						temp = new MedKit(this->player, &this->bullets, destX, destY);
-						break;
+				case PLAYER:
+					this->player->setCoords(destX, destY);
+					break;
+				case MED_KIT:
+					temp = new MedKit(this->player, &this->bullets, destX, destY);
+					break;
+				case BULLET_KIN:
+					temp = new BulletKin(this->player, &this->bullets, destX, destY);
+					break;
+				case SHOGUN:
+					temp = new Shogun(this->player, &this->bullets, destX, destY);
+					break;
+				case FUSELIER:
+					temp = new Fuselier(this->player, &this->bullets, destX, destY);
+					break;
+				case KNIGHT:
+					temp = new Knight(this->player, &this->bullets, destX, destY);
+					break;
+				default:
+					temp = new BulletKin(this->player, &this->bullets, destX, destY);
+					break;
 				}
-				Vector2 offset = temp->shape->getOffset();
-				temp->addCoords(-offset.x, -offset.y);
-				this->enemies.push(temp);
+				if (temp != nullptr) {
+					Vector2 offset = temp->shape->getOffset();
+					temp->addCoords(-offset.x, -offset.y);
+					this->enemies.push(temp);
+				}
 			}
 			rect.x += TILE_SIZE;
 			i++;
@@ -386,14 +397,32 @@ void Level::enemyPlayerCollision() {
 }
 
 void Level::checkEnemyDeath() {
+	int medKits = 0;
+	bool isMedKit = 0;
 	for (int i = this->enemies.getSize()-1; i >= 0; i--) {
 		GameObject* go = this->enemies.get(i);
+		if (go->getHitValue() < 0) {
+			medKits++;
+			isMedKit = true;
+		}
 		if (go->isDead()) {
+			if (isMedKit == false) {
+				int chance = rand() % 100 + 1;
+				if (chance <= MEDKIT_CHANCE_DROP) {
+					this->enemies.push(new MedKit(this->player, &this->bullets, *go->shape->getX(), *go->shape->getY()));
+					medKits++;
+				}
+			}
+			else
+			{
+				medKits--;
+			}
 			this->enemies.remove(i);
 			delete go;
 		}
+		isMedKit = false;
 	}
-	if (this->enemies.getSize() == 0) {
+	if (this->enemies.getSize() == 0 || medKits == this->enemies.getSize()) {
 		this->finished = 1;
 	}
 }

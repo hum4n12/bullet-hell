@@ -17,6 +17,10 @@ int GameObject::getHitValue()
 	return this->hitValue;
 }
 
+void GameObject::initAnimations(SDL_Surface* run, SDL_Surface* attack, SDL_Surface* idle){
+	this->animations = new Animations(run, attack, idle);
+}
+
 Vector2 GameObject::getDirection(){
 	return this->direction;
 }

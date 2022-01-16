@@ -56,6 +56,7 @@ void List::remove(int pos) {
     if (pos == 0) {
         this->head = this->head->next;
         //this->size--;
+        //delete curr->value;
         delete curr;
         return;
     }
@@ -67,7 +68,6 @@ void List::remove(int pos) {
     prev->next = curr->next;
 
     // Delete the node
-    //if(curr != nullptr) this->size--;
     delete curr;
 }
 

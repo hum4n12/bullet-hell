@@ -17,7 +17,7 @@ private:
 	int state = 0; //0 -> menu, 1 -> choose of level, 2 -> actual game
 	List buttons;
 	Vector2 mousePos{ 0,0 };
-	char score[MAX_STRING] = { '0' };
+	char score[MAX_STRING] = {};
 	//main menu
 	SDL_Surface* mainMenuBackground;
 	SDL_Surface* levelMenuBackground;
