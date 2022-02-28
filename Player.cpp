@@ -201,6 +201,9 @@ void Player::hit(int x){
 	}
 	this->updateScore(-1 * x);
 	this->hp -= x;
+	if (this->hp > PLAYER_HP) {
+		this->hp += x;
+	}
 	this->isInvicible = true;
 }
 

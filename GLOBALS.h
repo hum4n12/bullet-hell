@@ -10,6 +10,6 @@
 #define BULLET_SIZE 15
 #define BULLET_SPEED 400 //2 -> shows shapes
 #define ANIMATION_SPEED 10
-#define MODE false
+#define MODE true
 
 #endif // !GLOBALS_H

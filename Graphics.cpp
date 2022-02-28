@@ -46,10 +46,10 @@ void Graphics::Surface(SDL_Surface* screen, SDL_Surface* sprite, int x, int y, S
 		dest.x = x;
 		dest.y = y;
 	}
-	/*if (sprite == nullptr) {
+	if (sprite == nullptr) {
 		printf("\nerror");
 		return;
-	}*/
+	}
 	if (srcRect == nullptr) {
 		dest.w = sprite->w;
 		dest.h = sprite->h;
